@@ -1,7 +1,7 @@
 "use client";
 
 import { fantomeAction } from "@/actions/fantome";
-import { FamtomeSchema, FantomeSchemaType } from "@/actions/fantome/schema";
+import { FamtomeSchema } from "@/actions/fantome/schema";
 import { LoadingButton } from "@/components/loading-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,8 +33,8 @@ export const Fantome = () => {
 	const form = useZodForm({
 		schema: FamtomeSchema,
 		defaultValues: {
-			lat: 0.0,
-			lng: 0.0,
+			lat: "",
+			lng: "",
 		},
 	});
 
@@ -49,7 +49,7 @@ export const Fantome = () => {
 		},
 	});
 
-	const onSubmit = async (data: FantomeSchemaType) => {
+	const onSubmit = async (data: { lat: string; lng: string }) => {
 		await executeAsync(data);
 	};
 
@@ -83,8 +83,7 @@ export const Fantome = () => {
 											<Input
 												{...field}
 												placeholder="0.00"
-												type="number"
-												step="any"
+												type="text"
 												inputMode="decimal"
 											/>
 										</FormControl>
@@ -102,8 +101,7 @@ export const Fantome = () => {
 											<Input
 												{...field}
 												placeholder="0.00"
-												type="number"
-												step="any"
+												type="text"
 												inputMode="decimal"
 											/>
 										</FormControl>
