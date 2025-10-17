@@ -38,6 +38,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  * 
  */
 export type BugReport = $Result.DefaultSelection<Prisma.$BugReportPayload>
+/**
+ * Model Marker
+ * 
+ */
+export type Marker = $Result.DefaultSelection<Prisma.$MarkerPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -206,6 +211,16 @@ export class PrismaClient<
     * ```
     */
   get bugReport(): Prisma.BugReportDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.marker`: Exposes CRUD operations for the **Marker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Markers
+    * const markers = await prisma.marker.findMany()
+    * ```
+    */
+  get marker(): Prisma.MarkerDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -650,7 +665,8 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     User: 'User',
-    BugReport: 'BugReport'
+    BugReport: 'BugReport',
+    Marker: 'Marker'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -669,7 +685,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "session" | "account" | "verification" | "user" | "bugReport"
+      modelProps: "session" | "account" | "verification" | "user" | "bugReport" | "marker"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1043,6 +1059,80 @@ export namespace Prisma {
           }
         }
       }
+      Marker: {
+        payload: Prisma.$MarkerPayload<ExtArgs>
+        fields: Prisma.MarkerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MarkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MarkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>
+          }
+          findFirst: {
+            args: Prisma.MarkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MarkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>
+          }
+          findMany: {
+            args: Prisma.MarkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>[]
+          }
+          create: {
+            args: Prisma.MarkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>
+          }
+          createMany: {
+            args: Prisma.MarkerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MarkerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>[]
+          }
+          delete: {
+            args: Prisma.MarkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>
+          }
+          update: {
+            args: Prisma.MarkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.MarkerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MarkerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MarkerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>[]
+          }
+          upsert: {
+            args: Prisma.MarkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MarkerPayload>
+          }
+          aggregate: {
+            args: Prisma.MarkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMarker>
+          }
+          groupBy: {
+            args: Prisma.MarkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MarkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MarkerCountArgs<ExtArgs>
+            result: $Utils.Optional<MarkerCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1144,6 +1234,7 @@ export namespace Prisma {
     verification?: VerificationOmit
     user?: UserOmit
     bugReport?: BugReportOmit
+    marker?: MarkerOmit
   }
 
   /* Types for Logging */
@@ -6769,6 +6860,1052 @@ export namespace Prisma {
 
 
   /**
+   * Model Marker
+   */
+
+  export type AggregateMarker = {
+    _count: MarkerCountAggregateOutputType | null
+    _avg: MarkerAvgAggregateOutputType | null
+    _sum: MarkerSumAggregateOutputType | null
+    _min: MarkerMinAggregateOutputType | null
+    _max: MarkerMaxAggregateOutputType | null
+  }
+
+  export type MarkerAvgAggregateOutputType = {
+    lat: number | null
+    lng: number | null
+  }
+
+  export type MarkerSumAggregateOutputType = {
+    lat: number | null
+    lng: number | null
+  }
+
+  export type MarkerMinAggregateOutputType = {
+    id: string | null
+    lat: number | null
+    lng: number | null
+    label: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MarkerMaxAggregateOutputType = {
+    id: string | null
+    lat: number | null
+    lng: number | null
+    label: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MarkerCountAggregateOutputType = {
+    id: number
+    lat: number
+    lng: number
+    label: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MarkerAvgAggregateInputType = {
+    lat?: true
+    lng?: true
+  }
+
+  export type MarkerSumAggregateInputType = {
+    lat?: true
+    lng?: true
+  }
+
+  export type MarkerMinAggregateInputType = {
+    id?: true
+    lat?: true
+    lng?: true
+    label?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MarkerMaxAggregateInputType = {
+    id?: true
+    lat?: true
+    lng?: true
+    label?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MarkerCountAggregateInputType = {
+    id?: true
+    lat?: true
+    lng?: true
+    label?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MarkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Marker to aggregate.
+     */
+    where?: MarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Markers to fetch.
+     */
+    orderBy?: MarkerOrderByWithRelationInput | MarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Markers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Markers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Markers
+    **/
+    _count?: true | MarkerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MarkerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MarkerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MarkerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MarkerMaxAggregateInputType
+  }
+
+  export type GetMarkerAggregateType<T extends MarkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateMarker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMarker[P]>
+      : GetScalarType<T[P], AggregateMarker[P]>
+  }
+
+
+
+
+  export type MarkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MarkerWhereInput
+    orderBy?: MarkerOrderByWithAggregationInput | MarkerOrderByWithAggregationInput[]
+    by: MarkerScalarFieldEnum[] | MarkerScalarFieldEnum
+    having?: MarkerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MarkerCountAggregateInputType | true
+    _avg?: MarkerAvgAggregateInputType
+    _sum?: MarkerSumAggregateInputType
+    _min?: MarkerMinAggregateInputType
+    _max?: MarkerMaxAggregateInputType
+  }
+
+  export type MarkerGroupByOutputType = {
+    id: string
+    lat: number
+    lng: number
+    label: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MarkerCountAggregateOutputType | null
+    _avg: MarkerAvgAggregateOutputType | null
+    _sum: MarkerSumAggregateOutputType | null
+    _min: MarkerMinAggregateOutputType | null
+    _max: MarkerMaxAggregateOutputType | null
+  }
+
+  type GetMarkerGroupByPayload<T extends MarkerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MarkerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MarkerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MarkerGroupByOutputType[P]>
+            : GetScalarType<T[P], MarkerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MarkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lat?: boolean
+    lng?: boolean
+    label?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["marker"]>
+
+  export type MarkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lat?: boolean
+    lng?: boolean
+    label?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["marker"]>
+
+  export type MarkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lat?: boolean
+    lng?: boolean
+    label?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["marker"]>
+
+  export type MarkerSelectScalar = {
+    id?: boolean
+    lat?: boolean
+    lng?: boolean
+    label?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MarkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lat" | "lng" | "label" | "createdAt" | "updatedAt", ExtArgs["result"]["marker"]>
+
+  export type $MarkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Marker"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      lat: number
+      lng: number
+      label: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["marker"]>
+    composites: {}
+  }
+
+  type MarkerGetPayload<S extends boolean | null | undefined | MarkerDefaultArgs> = $Result.GetResult<Prisma.$MarkerPayload, S>
+
+  type MarkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MarkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MarkerCountAggregateInputType | true
+    }
+
+  export interface MarkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Marker'], meta: { name: 'Marker' } }
+    /**
+     * Find zero or one Marker that matches the filter.
+     * @param {MarkerFindUniqueArgs} args - Arguments to find a Marker
+     * @example
+     * // Get one Marker
+     * const marker = await prisma.marker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MarkerFindUniqueArgs>(args: SelectSubset<T, MarkerFindUniqueArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Marker that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MarkerFindUniqueOrThrowArgs} args - Arguments to find a Marker
+     * @example
+     * // Get one Marker
+     * const marker = await prisma.marker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MarkerFindUniqueOrThrowArgs>(args: SelectSubset<T, MarkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Marker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerFindFirstArgs} args - Arguments to find a Marker
+     * @example
+     * // Get one Marker
+     * const marker = await prisma.marker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MarkerFindFirstArgs>(args?: SelectSubset<T, MarkerFindFirstArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Marker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerFindFirstOrThrowArgs} args - Arguments to find a Marker
+     * @example
+     * // Get one Marker
+     * const marker = await prisma.marker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MarkerFindFirstOrThrowArgs>(args?: SelectSubset<T, MarkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Markers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Markers
+     * const markers = await prisma.marker.findMany()
+     * 
+     * // Get first 10 Markers
+     * const markers = await prisma.marker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const markerWithIdOnly = await prisma.marker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MarkerFindManyArgs>(args?: SelectSubset<T, MarkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Marker.
+     * @param {MarkerCreateArgs} args - Arguments to create a Marker.
+     * @example
+     * // Create one Marker
+     * const Marker = await prisma.marker.create({
+     *   data: {
+     *     // ... data to create a Marker
+     *   }
+     * })
+     * 
+     */
+    create<T extends MarkerCreateArgs>(args: SelectSubset<T, MarkerCreateArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Markers.
+     * @param {MarkerCreateManyArgs} args - Arguments to create many Markers.
+     * @example
+     * // Create many Markers
+     * const marker = await prisma.marker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MarkerCreateManyArgs>(args?: SelectSubset<T, MarkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Markers and returns the data saved in the database.
+     * @param {MarkerCreateManyAndReturnArgs} args - Arguments to create many Markers.
+     * @example
+     * // Create many Markers
+     * const marker = await prisma.marker.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Markers and only return the `id`
+     * const markerWithIdOnly = await prisma.marker.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MarkerCreateManyAndReturnArgs>(args?: SelectSubset<T, MarkerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Marker.
+     * @param {MarkerDeleteArgs} args - Arguments to delete one Marker.
+     * @example
+     * // Delete one Marker
+     * const Marker = await prisma.marker.delete({
+     *   where: {
+     *     // ... filter to delete one Marker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MarkerDeleteArgs>(args: SelectSubset<T, MarkerDeleteArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Marker.
+     * @param {MarkerUpdateArgs} args - Arguments to update one Marker.
+     * @example
+     * // Update one Marker
+     * const marker = await prisma.marker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MarkerUpdateArgs>(args: SelectSubset<T, MarkerUpdateArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Markers.
+     * @param {MarkerDeleteManyArgs} args - Arguments to filter Markers to delete.
+     * @example
+     * // Delete a few Markers
+     * const { count } = await prisma.marker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MarkerDeleteManyArgs>(args?: SelectSubset<T, MarkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Markers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Markers
+     * const marker = await prisma.marker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MarkerUpdateManyArgs>(args: SelectSubset<T, MarkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Markers and returns the data updated in the database.
+     * @param {MarkerUpdateManyAndReturnArgs} args - Arguments to update many Markers.
+     * @example
+     * // Update many Markers
+     * const marker = await prisma.marker.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Markers and only return the `id`
+     * const markerWithIdOnly = await prisma.marker.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MarkerUpdateManyAndReturnArgs>(args: SelectSubset<T, MarkerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Marker.
+     * @param {MarkerUpsertArgs} args - Arguments to update or create a Marker.
+     * @example
+     * // Update or create a Marker
+     * const marker = await prisma.marker.upsert({
+     *   create: {
+     *     // ... data to create a Marker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Marker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MarkerUpsertArgs>(args: SelectSubset<T, MarkerUpsertArgs<ExtArgs>>): Prisma__MarkerClient<$Result.GetResult<Prisma.$MarkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Markers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerCountArgs} args - Arguments to filter Markers to count.
+     * @example
+     * // Count the number of Markers
+     * const count = await prisma.marker.count({
+     *   where: {
+     *     // ... the filter for the Markers we want to count
+     *   }
+     * })
+    **/
+    count<T extends MarkerCountArgs>(
+      args?: Subset<T, MarkerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MarkerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Marker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MarkerAggregateArgs>(args: Subset<T, MarkerAggregateArgs>): Prisma.PrismaPromise<GetMarkerAggregateType<T>>
+
+    /**
+     * Group by Marker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MarkerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MarkerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MarkerGroupByArgs['orderBy'] }
+        : { orderBy?: MarkerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MarkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMarkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Marker model
+   */
+  readonly fields: MarkerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Marker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MarkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Marker model
+   */
+  interface MarkerFieldRefs {
+    readonly id: FieldRef<"Marker", 'String'>
+    readonly lat: FieldRef<"Marker", 'Float'>
+    readonly lng: FieldRef<"Marker", 'Float'>
+    readonly label: FieldRef<"Marker", 'String'>
+    readonly createdAt: FieldRef<"Marker", 'DateTime'>
+    readonly updatedAt: FieldRef<"Marker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Marker findUnique
+   */
+  export type MarkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * Filter, which Marker to fetch.
+     */
+    where: MarkerWhereUniqueInput
+  }
+
+  /**
+   * Marker findUniqueOrThrow
+   */
+  export type MarkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * Filter, which Marker to fetch.
+     */
+    where: MarkerWhereUniqueInput
+  }
+
+  /**
+   * Marker findFirst
+   */
+  export type MarkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * Filter, which Marker to fetch.
+     */
+    where?: MarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Markers to fetch.
+     */
+    orderBy?: MarkerOrderByWithRelationInput | MarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Markers.
+     */
+    cursor?: MarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Markers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Markers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Markers.
+     */
+    distinct?: MarkerScalarFieldEnum | MarkerScalarFieldEnum[]
+  }
+
+  /**
+   * Marker findFirstOrThrow
+   */
+  export type MarkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * Filter, which Marker to fetch.
+     */
+    where?: MarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Markers to fetch.
+     */
+    orderBy?: MarkerOrderByWithRelationInput | MarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Markers.
+     */
+    cursor?: MarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Markers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Markers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Markers.
+     */
+    distinct?: MarkerScalarFieldEnum | MarkerScalarFieldEnum[]
+  }
+
+  /**
+   * Marker findMany
+   */
+  export type MarkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * Filter, which Markers to fetch.
+     */
+    where?: MarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Markers to fetch.
+     */
+    orderBy?: MarkerOrderByWithRelationInput | MarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Markers.
+     */
+    cursor?: MarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Markers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Markers.
+     */
+    skip?: number
+    distinct?: MarkerScalarFieldEnum | MarkerScalarFieldEnum[]
+  }
+
+  /**
+   * Marker create
+   */
+  export type MarkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Marker.
+     */
+    data: XOR<MarkerCreateInput, MarkerUncheckedCreateInput>
+  }
+
+  /**
+   * Marker createMany
+   */
+  export type MarkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Markers.
+     */
+    data: MarkerCreateManyInput | MarkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Marker createManyAndReturn
+   */
+  export type MarkerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * The data used to create many Markers.
+     */
+    data: MarkerCreateManyInput | MarkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Marker update
+   */
+  export type MarkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Marker.
+     */
+    data: XOR<MarkerUpdateInput, MarkerUncheckedUpdateInput>
+    /**
+     * Choose, which Marker to update.
+     */
+    where: MarkerWhereUniqueInput
+  }
+
+  /**
+   * Marker updateMany
+   */
+  export type MarkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Markers.
+     */
+    data: XOR<MarkerUpdateManyMutationInput, MarkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Markers to update
+     */
+    where?: MarkerWhereInput
+    /**
+     * Limit how many Markers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Marker updateManyAndReturn
+   */
+  export type MarkerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * The data used to update Markers.
+     */
+    data: XOR<MarkerUpdateManyMutationInput, MarkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Markers to update
+     */
+    where?: MarkerWhereInput
+    /**
+     * Limit how many Markers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Marker upsert
+   */
+  export type MarkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Marker to update in case it exists.
+     */
+    where: MarkerWhereUniqueInput
+    /**
+     * In case the Marker found by the `where` argument doesn't exist, create a new Marker with this data.
+     */
+    create: XOR<MarkerCreateInput, MarkerUncheckedCreateInput>
+    /**
+     * In case the Marker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MarkerUpdateInput, MarkerUncheckedUpdateInput>
+  }
+
+  /**
+   * Marker delete
+   */
+  export type MarkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+    /**
+     * Filter which Marker to delete.
+     */
+    where: MarkerWhereUniqueInput
+  }
+
+  /**
+   * Marker deleteMany
+   */
+  export type MarkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Markers to delete
+     */
+    where?: MarkerWhereInput
+    /**
+     * Limit how many Markers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Marker without action
+   */
+  export type MarkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Marker
+     */
+    select?: MarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Marker
+     */
+    omit?: MarkerOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -6851,6 +7988,18 @@ export namespace Prisma {
   export type BugReportScalarFieldEnum = (typeof BugReportScalarFieldEnum)[keyof typeof BugReportScalarFieldEnum]
 
 
+  export const MarkerScalarFieldEnum: {
+    id: 'id',
+    lat: 'lat',
+    lng: 'lng',
+    label: 'label',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MarkerScalarFieldEnum = (typeof MarkerScalarFieldEnum)[keyof typeof MarkerScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -6912,6 +8061,20 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -7279,6 +8442,65 @@ export namespace Prisma {
     userId?: StringNullableWithAggregatesFilter<"BugReport"> | string | null
     message?: StringWithAggregatesFilter<"BugReport"> | string
     createdAt?: DateTimeWithAggregatesFilter<"BugReport"> | Date | string
+  }
+
+  export type MarkerWhereInput = {
+    AND?: MarkerWhereInput | MarkerWhereInput[]
+    OR?: MarkerWhereInput[]
+    NOT?: MarkerWhereInput | MarkerWhereInput[]
+    id?: StringFilter<"Marker"> | string
+    lat?: FloatFilter<"Marker"> | number
+    lng?: FloatFilter<"Marker"> | number
+    label?: StringNullableFilter<"Marker"> | string | null
+    createdAt?: DateTimeFilter<"Marker"> | Date | string
+    updatedAt?: DateTimeFilter<"Marker"> | Date | string
+  }
+
+  export type MarkerOrderByWithRelationInput = {
+    id?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    label?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MarkerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MarkerWhereInput | MarkerWhereInput[]
+    OR?: MarkerWhereInput[]
+    NOT?: MarkerWhereInput | MarkerWhereInput[]
+    lat?: FloatFilter<"Marker"> | number
+    lng?: FloatFilter<"Marker"> | number
+    label?: StringNullableFilter<"Marker"> | string | null
+    createdAt?: DateTimeFilter<"Marker"> | Date | string
+    updatedAt?: DateTimeFilter<"Marker"> | Date | string
+  }, "id">
+
+  export type MarkerOrderByWithAggregationInput = {
+    id?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    label?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MarkerCountOrderByAggregateInput
+    _avg?: MarkerAvgOrderByAggregateInput
+    _max?: MarkerMaxOrderByAggregateInput
+    _min?: MarkerMinOrderByAggregateInput
+    _sum?: MarkerSumOrderByAggregateInput
+  }
+
+  export type MarkerScalarWhereWithAggregatesInput = {
+    AND?: MarkerScalarWhereWithAggregatesInput | MarkerScalarWhereWithAggregatesInput[]
+    OR?: MarkerScalarWhereWithAggregatesInput[]
+    NOT?: MarkerScalarWhereWithAggregatesInput | MarkerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Marker"> | string
+    lat?: FloatWithAggregatesFilter<"Marker"> | number
+    lng?: FloatWithAggregatesFilter<"Marker"> | number
+    label?: StringNullableWithAggregatesFilter<"Marker"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Marker"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Marker"> | Date | string
   }
 
   export type SessionCreateInput = {
@@ -7668,6 +8890,69 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MarkerCreateInput = {
+    id?: string
+    lat: number
+    lng: number
+    label?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MarkerUncheckedCreateInput = {
+    id?: string
+    lat: number
+    lng: number
+    label?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MarkerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MarkerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MarkerCreateManyInput = {
+    id?: string
+    lat: number
+    lng: number
+    label?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MarkerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MarkerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -8009,6 +9294,70 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type MarkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    label?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MarkerAvgOrderByAggregateInput = {
+    lat?: SortOrder
+    lng?: SortOrder
+  }
+
+  export type MarkerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    label?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MarkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    label?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MarkerSumOrderByAggregateInput = {
+    lat?: SortOrder
+    lng?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type UserCreateNestedOneWithoutSessionsInput = {
     create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
@@ -8199,6 +9548,14 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBugReportsInput, UserUpdateWithoutBugReportsInput>, UserUncheckedUpdateWithoutBugReportsInput>
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -8344,6 +9701,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutSessionsInput = {

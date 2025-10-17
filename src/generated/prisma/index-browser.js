@@ -174,6 +174,15 @@ exports.Prisma.BugReportScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MarkerScalarFieldEnum = {
+  id: 'id',
+  lat: 'lat',
+  lng: 'lng',
+  label: 'label',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -195,7 +204,8 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   User: 'User',
-  BugReport: 'BugReport'
+  BugReport: 'BugReport',
+  Marker: 'Marker'
 };
 
 /**

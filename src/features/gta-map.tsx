@@ -8,22 +8,13 @@ import "leaflet/dist/leaflet.css";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Marker } from "@/generated/prisma";
 
-const POS = [
-	// { pos: [0, 0], label: "MIDDLE" },
-	{ pos: [2854.64, 1429.32], label: "Fantome" },
-	{ pos: [2662.56, 1444.59], label: "Fantome" },
-	{ pos: [2491.72, 1610.22], label: "Fantome" },
-	{ pos: [2901.84, 3636.96], label: "Fantome" },
-	{ pos: [3050.39, 5064.79], label: "Fantome" },
-	{ pos: [1108.35, -1132.49], label: "Fantome" },
-	{ pos: [1134.25, 356.3], label: "Fantome" },
-	{ pos: [2584.66, 2712.0], label: "Fantome" },
-	{ pos: [3009.58, 4032.44], label: "Fantome" },
-	{ pos: [1515.28, 3685.71], label: "Fantome" },
-];
+export type GTAMapProps = {
+	markers: Marker[];
+};
 
-export const GTAMap = () => {
+export const GTAMap = (props: GTAMapProps) => {
 	const mapRef = useRef<HTMLDivElement>(null);
 	const mapInstanceRef = useRef<Map | null>(null);
 	const [currentLayer, setCurrentLayer] = useState("Satelite");
@@ -135,10 +126,15 @@ export const GTAMap = () => {
 				});
 			}
 
-			POS.map((p) => {
-				L.marker([p.pos[1], p.pos[0]], { icon: customIcon(1) })
+			props.markers.map((marker) => {
+				L.marker([marker.lng, marker.lat], { icon: customIcon(1) })
 					.addTo(mymap)
-					.bindPopup(p.label);
+					.bindPopup(
+						marker.label ??
+							`Marqueur à: ${marker.lat.toFixed(
+								2
+							)}, ${marker.lng.toFixed(2)}`
+					);
 			});
 
 			// Ajouter un gestionnaire d'événement pour créer des marqueurs en cliquant

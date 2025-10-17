@@ -80,3 +80,13 @@ model BugReport {
 
   user User? @relation(fields: [userId], references: [id])
 }
+
+model Marker {
+  id    String  @id @default(cuid())
+  lat   Float
+  lng   Float
+  label String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
