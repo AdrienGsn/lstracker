@@ -202,6 +202,10 @@ const config = {
         "fromEnvVar": null,
         "value": "darwin",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [
@@ -230,8 +234,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "model Session {\n  id                   String  @id @default(cuid())\n  userId               String\n  token                String  @unique\n  ipAddress            String?\n  userAgent            String?\n  activeOrganizationId String?\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  expiresAt DateTime?\n\n  user User @relation(fields: [userId], references: [id])\n}\n\nmodel Account {\n  id                    String    @id @default(cuid())\n  userId                String\n  accountId             String\n  providerId            String\n  accessToken           String?\n  refreshToken          String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  idToken               String?\n  password              String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  user User @relation(fields: [userId], references: [id])\n}\n\nmodel Verification {\n  id         String @id @default(cuid())\n  identifier String\n  value      String\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  expiresAt DateTime?\n}\n\nmodel User {\n  id            String  @id @default(cuid())\n  name          String  @unique\n  email         String  @unique\n  emailVerified Boolean @default(false)\n  image         String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  sessions   Session[]\n  accounts   Account[]\n  bugReports BugReport[]\n\n  @@unique([name, email])\n}\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  output          = \"../../src/generated/prisma\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DATABASE_URL_UNPOOLED\")\n}\n\nmodel BugReport {\n  id      String  @id @default(cuid())\n  userId  String?\n  message String\n\n  createdAt DateTime @default(now())\n\n  user User? @relation(fields: [userId], references: [id])\n}\n\nmodel Marker {\n  id    String  @id @default(cuid())\n  lat   Float\n  lng   Float\n  label String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
-  "inlineSchemaHash": "0ce444acaff1f74b4131bf83d260848c9ddd599cafc4ecf963da7eb5b954ef64",
+  "inlineSchema": "model Session {\n  id                   String  @id @default(cuid())\n  userId               String\n  token                String  @unique\n  ipAddress            String?\n  userAgent            String?\n  activeOrganizationId String?\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  expiresAt DateTime?\n\n  user User @relation(fields: [userId], references: [id])\n}\n\nmodel Account {\n  id                    String    @id @default(cuid())\n  userId                String\n  accountId             String\n  providerId            String\n  accessToken           String?\n  refreshToken          String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  idToken               String?\n  password              String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  user User @relation(fields: [userId], references: [id])\n}\n\nmodel Verification {\n  id         String @id @default(cuid())\n  identifier String\n  value      String\n\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  expiresAt DateTime?\n}\n\nmodel User {\n  id            String  @id @default(cuid())\n  name          String  @unique\n  email         String  @unique\n  emailVerified Boolean @default(false)\n  image         String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  sessions   Session[]\n  accounts   Account[]\n  bugReports BugReport[]\n\n  @@unique([name, email])\n}\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  output          = \"../../src/generated/prisma\"\n  previewFeatures = [\"driverAdapters\"]\n  binaryTargets   = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DATABASE_URL_UNPOOLED\")\n}\n\nmodel BugReport {\n  id      String  @id @default(cuid())\n  userId  String?\n  message String\n\n  createdAt DateTime @default(now())\n\n  user User? @relation(fields: [userId], references: [id])\n}\n\nmodel Marker {\n  id    String  @id @default(cuid())\n  lat   Float\n  lng   Float\n  label String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
+  "inlineSchemaHash": "dc349f8ea2cfcf4a3174c2f27c92b36d9cc9da0d40ba047e747a4e70029e2cbc",
   "copyEngine": true
 }
 
@@ -272,6 +276,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-darwin.dylib.node");
 path.join(process.cwd(), "src/generated/prisma/libquery_engine-darwin.dylib.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-rhel-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/schema.prisma")
