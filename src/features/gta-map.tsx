@@ -2,7 +2,7 @@
 
 import type { Map } from "leaflet";
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import "leaflet/dist/leaflet.css";
 
@@ -18,8 +18,8 @@ export type GTAMapProps = {
 export const GTAMap = (props: GTAMapProps) => {
 	const mapRef = useRef<HTMLDivElement>(null);
 	const mapInstanceRef = useRef<Map | null>(null);
-	const [currentLayer, setCurrentLayer] = useState("Satelite");
-	const [showLayers, setShowLayers] = useState(false);
+	// const [currentLayer, setCurrentLayer] = useState("Satelite");
+	// const [showLayers, setShowLayers] = useState(false);
 
 	useEffect(() => {
 		if (typeof window === "undefined") return;
@@ -200,20 +200,20 @@ export const GTAMap = (props: GTAMapProps) => {
 		}
 	};
 
-	const handleLayerChange = (layerName: string) => {
-		if (mapInstanceRef.current && (window as any).mapLayers) {
-			Object.values((window as any).mapLayers).forEach((layer: any) => {
-				mapInstanceRef.current?.removeLayer(layer);
-			});
+	// const handleLayerChange = (layerName: string) => {
+	// 	if (mapInstanceRef.current && (window as any).mapLayers) {
+	// 		Object.values((window as any).mapLayers).forEach((layer: any) => {
+	// 			mapInstanceRef.current?.removeLayer(layer);
+	// 		});
 
-			const newLayer = (window as any).mapLayers[layerName];
+	// 		const newLayer = (window as any).mapLayers[layerName];
 
-			if (newLayer) {
-				mapInstanceRef.current.addLayer(newLayer);
-				setCurrentLayer(layerName);
-			}
-		}
-	};
+	// 		if (newLayer) {
+	// 			mapInstanceRef.current.addLayer(newLayer);
+	// 			setCurrentLayer(layerName);
+	// 		}
+	// 	}
+	// };
 
 	return (
 		<div className="size-full relative">
