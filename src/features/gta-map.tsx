@@ -142,20 +142,20 @@ export const GTAMap = () => {
 			});
 
 			// Ajouter un gestionnaire d'événement pour créer des marqueurs en cliquant
-			mymap.on("click", function (e) {
-				const lat = e.latlng.lat;
-				const lng = e.latlng.lng;
+			// mymap.on("click", function (e) {
+			// 	const lat = e.latlng.lat;
+			// 	const lng = e.latlng.lng;
 
-				// Créer un nouveau marqueur à la position cliquée
-				const newMarker = L.marker([lat, lng], { icon: customIcon(1) })
-					.addTo(mymap)
-					.bindPopup(
-						`Marqueur à: ${lat.toFixed(2)}, ${lng.toFixed(2)}`
-					);
+			// 	// Créer un nouveau marqueur à la position cliquée
+			// 	const newMarker = L.marker([lat, lng], { icon: customIcon(1) })
+			// 		.addTo(mymap)
+			// 		.bindPopup(
+			// 			`Marqueur à: ${lat.toFixed(2)}, ${lng.toFixed(2)}`
+			// 		);
 
-				// Ouvrir automatiquement le popup du nouveau marqueur
-				newMarker.openPopup();
-			});
+			// 	// Ouvrir automatiquement le popup du nouveau marqueur
+			// 	newMarker.openPopup();
+			// });
 		});
 
 		return () => {
