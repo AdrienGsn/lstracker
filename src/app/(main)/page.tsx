@@ -1,9 +1,10 @@
 import { GTAMap } from "@/features/gta-map";
-import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 
 export default async function RoutePage(props: PageParams) {
-	const markers = await prisma.marker.findMany();
+	const markers = await fetch("/api/markers", { cache: "no-store" });
 
-	return <GTAMap markers={markers} />;
+	const markersData = await markers.json();
+
+	return <GTAMap markers={markersData} />;
 }
