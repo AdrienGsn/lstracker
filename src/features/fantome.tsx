@@ -24,12 +24,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export const Fantome = () => {
-	const router = useRouter();
-
 	const form = useZodForm({
 		schema: FamtomeSchema,
 		defaultValues: {

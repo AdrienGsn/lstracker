@@ -8,18 +8,33 @@ import "leaflet/dist/leaflet.css";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Loader } from "@/components/ui/loader";
 import { Marker } from "@/generated/prisma";
+import { useQuery } from "@tanstack/react-query";
 import { Fantome } from "./fantome";
 
-export type GTAMapProps = {
-	markers: Marker[];
+const fetchMarkers = async () => {
+	const response = await fetch("/api/markers");
+	if (!response.ok) {
+		throw new Error("Erreur lors de la récupération des marqueurs");
+	}
+	return response.json() as Promise<Marker[]>;
 };
 
-export const GTAMap = (props: GTAMapProps) => {
+export const GTAMap = () => {
 	const mapRef = useRef<HTMLDivElement>(null);
 	const mapInstanceRef = useRef<Map | null>(null);
 	// const [currentLayer, setCurrentLayer] = useState("Satelite");
 	// const [showLayers, setShowLayers] = useState(false);
+
+	const {
+		data: markers,
+		isPending,
+		isLoading,
+	} = useQuery({
+		queryKey: ["markers"],
+		queryFn: fetchMarkers,
+	});
 
 	useEffect(() => {
 		if (typeof window === "undefined") return;
@@ -109,12 +124,6 @@ export const GTAMap = (props: GTAMapProps) => {
 				}
 			);
 
-			var ExampleGroup = L.layerGroup();
-
-			var Icons = {
-				Example: ExampleGroup,
-			};
-
 			var mymap = L.map(mapRef.current!, {
 				crs: CUSTOM_CRS,
 				minZoom: 1,
@@ -138,55 +147,57 @@ export const GTAMap = (props: GTAMapProps) => {
 				Grid: GridStyle,
 			};
 			(window as any).mapInstance = mymap;
-
-			function customIcon(icon: string | number) {
-				return L.icon({
-					iconUrl: `./images/blips/${icon}.png`,
-					iconSize: [20, 20],
-					iconAnchor: [10, 10], // Centre de l'icône (la moitié de la taille)
-					popupAnchor: [0, -10], // Au-dessus du marqueur
-				});
-			}
-
-			props.markers.map((marker) => {
-				L.marker([marker.lng, marker.lat], { icon: customIcon(1) })
-					.addTo(mymap)
-					.bindPopup(
-						marker.label
-							? `${marker.label} ${marker.lat.toFixed(
-									2
-							  )}, ${marker.lng.toFixed(2)}`
-							: `Marqueur à: ${marker.lat.toFixed(
-									2
-							  )}, ${marker.lng.toFixed(2)}`
-					);
-			});
-
-			// Ajouter un gestionnaire d'événement pour créer des marqueurs en cliquant
-			// mymap.on("click", function (e) {
-			// 	const lat = e.latlng.lat;
-			// 	const lng = e.latlng.lng;
-
-			// 	// Créer un nouveau marqueur à la position cliquée
-			// 	const newMarker = L.marker([lat, lng], { icon: customIcon(1) })
-			// 		.addTo(mymap)
-			// 		.bindPopup(
-			// 			`Marqueur à: ${lat.toFixed(2)}, ${lng.toFixed(2)}`
-			// 		);
-
-			// 	// Ouvrir automatiquement le popup du nouveau marqueur
-			// 	newMarker.openPopup();
-			// });
+			(window as any).L = L; // Stocker L dans window pour y accéder plus tard
 		});
 
 		return () => {
 			if (mapInstanceRef.current) {
 				mapInstanceRef.current.remove();
-
 				mapInstanceRef.current = null;
 			}
 		};
 	}, []);
+
+	useEffect(() => {
+		if (
+			!mapInstanceRef.current ||
+			!markers ||
+			typeof window === "undefined"
+		)
+			return;
+
+		const L = (window as any).L;
+		if (!L) return;
+
+		function customIcon(icon: string | number) {
+			return L.icon({
+				iconUrl: `./images/blips/${icon}.png`,
+				iconSize: [20, 20],
+				iconAnchor: [10, 10],
+				popupAnchor: [0, -10],
+			});
+		}
+
+		mapInstanceRef.current.eachLayer((layer: any) => {
+			if (layer instanceof L.Marker) {
+				mapInstanceRef.current?.removeLayer(layer);
+			}
+		});
+
+		markers.forEach((marker) => {
+			L.marker([marker.lng, marker.lat], { icon: customIcon(1) })
+				.addTo(mapInstanceRef.current!)
+				.bindPopup(
+					marker.label
+						? `${marker.label} ${marker.lat.toFixed(
+								2
+						  )}, ${marker.lng.toFixed(2)}`
+						: `Marqueur à: ${marker.lat.toFixed(
+								2
+						  )}, ${marker.lng.toFixed(2)}`
+				);
+		});
+	}, [markers]);
 
 	const handleZoomIn = () => {
 		if (mapInstanceRef.current) {
@@ -234,6 +245,11 @@ export const GTAMap = (props: GTAMapProps) => {
 					<MinusIcon />
 				</Button>
 			</ButtonGroup>
+			{isPending || isLoading ? (
+				<div className="absolute top-0 left-0 size-full z-50 flex items-center justify-center bg-black/75">
+					<Loader />
+				</div>
+			) : null}
 		</div>
 	);
 };
