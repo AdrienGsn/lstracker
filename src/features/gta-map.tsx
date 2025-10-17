@@ -58,35 +58,53 @@ export const GTAMap = (props: GTAMapProps) => {
 			});
 
 			var SateliteStyle = L.tileLayer(
-				"./images/mapStyles/styleSatelite/{z}/{x}/{y}.jpg",
+				"./images/mapStyles/styleSatelite/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
 					maxZoom: 8,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "SateliteStyle map",
+					keepBuffer: 8,
+					updateWhenIdle: true,
+					updateWhenZooming: false,
+					updateInterval: 200,
+					opacity: 1,
+					className: "tile-loaded",
 				}
 			);
 
 			var AtlasStyle = L.tileLayer(
-				"./images/mapStyles/styleAtlas/{z}/{x}/{y}.jpg",
+				"./images/mapStyles/styleAtlas/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
 					maxZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "styleAtlas map",
+					keepBuffer: 8,
+					updateWhenIdle: true,
+					updateWhenZooming: false,
+					updateInterval: 200,
+					opacity: 1,
+					className: "tile-loaded",
 				}
 			);
 
 			var GridStyle = L.tileLayer(
-				"./images/mapStyles/styleGrid/{z}/{x}/{y}.png",
+				"./images/mapStyles/styleGrid/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
 					maxZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "styleGrid map",
+					keepBuffer: 8,
+					updateWhenIdle: true,
+					updateWhenZooming: false,
+					updateInterval: 200,
+					opacity: 1,
+					className: "tile-loaded",
 				}
 			);
 
@@ -99,13 +117,16 @@ export const GTAMap = (props: GTAMapProps) => {
 			var mymap = L.map(mapRef.current!, {
 				crs: CUSTOM_CRS,
 				minZoom: 1,
-				maxZoom: 10,
+				maxZoom: 5,
 				preferCanvas: true,
 				layers: [SateliteStyle],
 				center: [0, 0],
 				zoom: 3,
-				zoomControl: false,
 				attributionControl: false,
+				zoomControl: true,
+				fadeAnimation: false,
+				zoomAnimation: true,
+				markerZoomAnimation: true,
 			});
 
 			mapInstanceRef.current = mymap;
@@ -192,7 +213,11 @@ export const GTAMap = (props: GTAMapProps) => {
 
 	return (
 		<div className="size-full relative">
-			<div ref={mapRef} className="size-full z-10" />
+			<div
+				ref={mapRef}
+				className="size-full z-10"
+				style={{ backgroundColor: "#000" }}
+			/>
 			<ButtonGroup
 				orientation="vertical"
 				className="h-fit bottom-2 right-2 absolute z-50"

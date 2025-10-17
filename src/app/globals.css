@@ -120,3 +120,8 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+.tile-loaded img {
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
