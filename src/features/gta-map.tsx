@@ -9,6 +9,7 @@ import "leaflet/dist/leaflet.css";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Marker } from "@/generated/prisma";
+import { Fantome } from "./fantome";
 
 export type GTAMapProps = {
 	markers: Marker[];
@@ -123,7 +124,7 @@ export const GTAMap = (props: GTAMapProps) => {
 				center: [0, 0],
 				zoom: 3,
 				attributionControl: false,
-				zoomControl: true,
+				zoomControl: false,
 				fadeAnimation: false,
 				zoomAnimation: true,
 				markerZoomAnimation: true,
@@ -151,10 +152,13 @@ export const GTAMap = (props: GTAMapProps) => {
 				L.marker([marker.lng, marker.lat], { icon: customIcon(1) })
 					.addTo(mymap)
 					.bindPopup(
-						marker.label ??
-							`Marqueur à: ${marker.lat.toFixed(
-								2
-							)}, ${marker.lng.toFixed(2)}`
+						marker.label
+							? `${marker.label} ${marker.lat.toFixed(
+									2
+							  )}, ${marker.lng.toFixed(2)}`
+							: `Marqueur à: ${marker.lat.toFixed(
+									2
+							  )}, ${marker.lng.toFixed(2)}`
 					);
 			});
 
@@ -218,6 +222,7 @@ export const GTAMap = (props: GTAMapProps) => {
 				className="size-full z-10"
 				style={{ backgroundColor: "#000" }}
 			/>
+			<Fantome />
 			<ButtonGroup
 				orientation="vertical"
 				className="h-fit bottom-2 right-2 absolute z-50"
