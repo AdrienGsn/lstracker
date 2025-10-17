@@ -9,7 +9,7 @@ import "leaflet/dist/leaflet.css";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Loader } from "@/components/ui/loader";
-import { Marker } from "@/generated/prisma";
+import { Marker } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Fantome } from "./fantome";
 
