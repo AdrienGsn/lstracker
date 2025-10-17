@@ -1,0 +1,60 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Using Next-Safe-Action (`safe-action.ts`)
+
+## Context
+
+We use the [next-safe-action](mdc:https:/next-safe-action.dev) library to create typed and secure Server Actions in our Next.js application.  
+The `src/lib/safe-action.ts` file centralizes the configuration and export of action clients (`action`, `authAction`), as well as server error handling.
+
+## Recommended Use Cases
+
+> ⚠️ Server Actions should only be used for mutations (creating, modifying, deleting data) **from within the Next.js application itself** (not for simple fetching, nor for external requests).
+
+| When?                                                                 | Server Action (next-safe-action) | API Routes |
+|-------------------------------------------------------------------------|:--------------------------------:|:----------:|
+| To fetch data (fetch only)                                            |        ❌ (do not use)           |     ✅     |
+| To perform mutations (from Next.js app)                               |        ✅ (use)                  |     🟧     |
+| To perform mutations from an external application (mobile/other)       |        ❌ (do not use)           |     ✅     |
+
+## Best Practices
+
+- **Define validation schema** with Zod (or other) for each action.
+- **Use Server Actions only for server-side mutations**, never for simple data fetching.
+- **Do not expose Server Actions to external applications** (use an API Route for that).
+- **Handle errors** through the centralized handler in `safe-action.ts`.
+- **Use `authAction`** for mutations requiring authentication.
+
+## Minimal Example
+
+```ts
+// src/actions/my-action/index.ts
+"use server";
+
+import { action } from "@/lib/safe-action";
+import { MyActionSchema } from "./schema.ts";
+
+export const createPost = action
+  .schema(MyActionSchema)
+  .action(async ({ parsedInput }) => {
+    // ... mutation logic here
+    return { success: true };
+  });
+
+// src/actions/my-action/schema.ts
+import { z } from "zod";
+
+export const MyActionSchema = z.object({
+  title: z.string().min(1),
+});
+
+export type MyActionSchemaType = z.infer<typeof MyActionSchema>;
+```
+
+## Key Points
+
+- **Internal mutation** (from Next.js) → Server Action (next-safe-action)
+- **Data reading** or **external mutation** → API Route

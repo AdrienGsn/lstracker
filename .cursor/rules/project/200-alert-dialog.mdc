@@ -1,0 +1,77 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# How to Use Alert Dialogs with Shadcn UI (`alert-dialog.tsx`)
+
+## Context
+
+We use the [Shadcn UI Alert Dialog](https://ui.shadcn.com/docs/components/alert-dialog) component to display important modal dialogs that require user confirmation or action.  
+The implementation is located in `src/components/ui/alert-dialog.tsx` and is based on Radix UI primitives, styled with Tailwind and Shadcn conventions.
+
+## Installation
+
+To add the Alert Dialog component to your project, run:
+
+```bash
+pnpm dlx shadcn@latest add alert-dialog
+```
+
+## Usage
+
+Import the required components from your UI library:
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+```
+
+Wrap your content with the `AlertDialog` component and use the provided subcomponents to structure your dialog:
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger>
+    <Button>Open Dialog</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction variant="destructive">Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## Features
+
+- **Accessible**: Built on top of Radix UI primitives for accessibility.
+- **Customizable**: Use the `variant` prop on `AlertDialogAction` for different button styles (e.g., `"default"`, `"destructive"`, `"outline"`).
+- **Composable**: All subcomponents (`Header`, `Title`, `Description`, `Footer`, `Action`, `Cancel`) are available for flexible dialog layouts.
+- **Client Component**: The dialog is a client-side component and should be used in client-rendered parts of your app.
+
+## Best Practices
+
+- Use `AlertDialog` for actions that are destructive or require explicit user confirmation.
+- Always provide both a cancel and a confirm action for clarity.
+- Keep dialog content concise and clear.
+
+## Reference
+
+- [Shadcn UI Alert Dialog Documentation](https://ui.shadcn.com/docs/components/alert-dialog)
+- [Radix UI Alert Dialog](https://www.radix-ui.com/primitives/docs/components/alert-dialog)

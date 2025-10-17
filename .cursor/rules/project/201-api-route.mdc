@@ -1,0 +1,80 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# How to Use API Routes with Next-Safe-Route (`safe-route.ts`)
+
+## Context
+
+We use the [next-zod-route](https://github.com/edmundhung/next-zod-route) library to create type-safe, validated API routes in our Next.js application.  
+The file `src/lib/safe-route.ts` centralizes the configuration and export of route helpers (`route`, `authRoute`) and error handling.
+
+## When to Use API Routes
+
+> ⚠️ API routes should only be used in specific cases, as shown in the decision table below (see also the Server Action prompt).
+
+| When?                                                                 | Server Action (next-safe-action) | API Route (next-safe-route) |
+|-----------------------------------------------------------------------|:-------------------------------:|:--------------------------:|
+| To fetch data (fetch only)                                            |                ❌                |            ✅              |
+| To perform a mutation (from inside the Next.js app)                   |                ✅                |            🟧              |
+| To perform a mutation from an external app (mobile/other)             |                ❌                |            ✅              |
+
+- **Use API routes for:**
+  - Fetching data (GET requests)
+  - Mutations from external clients (mobile apps, third-party services)
+  - Mutations from the Next.js app if you need REST endpoints (but prefer Server Actions for internal mutations)
+
+- **Do NOT use API routes for:**
+  - Internal mutations that can be handled by Server Actions
+
+## Best Practices
+
+- **Define a Zod schema** for validating request data.
+- **Use `route` for public endpoints** and `authRoute` for endpoints requiring authentication.
+- **Handle errors** using the centralized error handler in `safe-route.ts`.
+- **Return JSON responses** using `NextResponse.json`.
+
+## Example
+
+```ts
+// src/app/api/user/route.ts
+import { z } from "zod";
+import { route } from "@/lib/safe-route";
+
+const schema = z.object({
+  userId: z.string(),
+});
+
+export const POST = route
+  .input(schema)
+  .handler(async ({ input }) => {
+    // ... mutation logic here
+    return { success: true };
+  });
+```
+
+## Authentication Example
+
+```ts
+// src/app/api/secure/route.ts
+import { z } from "zod";
+import { authRoute } from "@/lib/safe-route";
+
+const schema = z.object({
+  data: z.string(),
+});
+
+export const POST = authRoute
+  .input(schema)
+  .handler(async ({ input, user }) => {
+    // ... logic with authenticated user
+    return { success: true, user };
+  });
+```
+
+## Summary Table
+
+- **Data fetching (GET)** → API Route
+- **Internal mutation (from Next.js app)** → Prefer Server Action
+- **External mutation (from mobile/other)** → API Route

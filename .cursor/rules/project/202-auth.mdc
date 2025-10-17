@@ -1,0 +1,149 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# How to Use Better Auth (`@auth`)
+
+## Context
+
+We use [Better Auth](mdc:https:/www.better-auth.com/docs/integrations/next) for authentication in our Next.js application.  
+The main configuration and helpers are located in `src/lib/auth/`.  
+Better Auth provides both server-side and client-side utilities for authentication, session management, and social login.
+
+---
+
+## Server-Side Usage
+
+- Use the `auth` instance to access authentication methods on the server (RSC, Server Actions, API routes).
+- Always pass the request headers when fetching the session.
+
+**Example: Get Session in a Server Component**
+
+```tsx
+import { headers } from "next/headers";
+
+import { auth } from "@/lib/auth";
+
+export async function ServerComponent() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return <div>Not authenticated</div>;
+  }
+  
+  return <div>Welcome {session.user.name}</div>;
+}
+```
+
+**Example: Get Session in a Server Action**
+
+```ts
+"use server";
+
+import { headers } from "next/headers";
+
+import { auth } from "@/lib/auth";
+
+export const someAuthenticatedAction = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  // ... your logic
+};
+```
+
+---
+
+## Client-Side Usage
+
+- Use the `authClient` instance for client-side authentication and session management.
+- The client uses nano-store for reactivity and better-fetch for requests.
+
+**Example: Using the Auth Client**
+
+```ts
+import { authClient } from "@/lib/auth/client";
+
+const { signIn, signOut, useSession } = authClient;
+```
+
+**Example: Social Login**
+
+```ts
+import { signIn } from "@/lib/auth/client";
+
+export const signInDiscord = async () => {
+  const data = await signIn.social({
+    provider: "discord",
+  });
+
+  return data;
+};
+```
+
+**Example: Use Session in a Component**
+
+```tsx
+import { useSession } from "@/lib/auth/client";
+
+export function Profile() {
+  const { data } = useSession();
+
+  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+}
+```
+
+---
+
+## API Route Integration
+
+- Mount the Better Auth handler to an API route for authentication endpoints.
+
+**Example: API Route Setup**
+
+```ts
+// app/api/auth/[...all]/route.ts
+import { toNextJsHandler } from "better-auth/next-js";
+
+import { auth } from "@/lib/auth";
+
+export const { GET, POST } = toNextJsHandler(auth.handler);
+```
+
+---
+
+## Cookies in Server Actions
+
+- To set cookies in server actions, use the `nextCookies` plugin in your auth config.
+
+**Example: Enable Cookie Support**
+
+```ts
+import { betterAuth } from "better-auth";
+import { nextCookies } from "better-auth/next-js";
+
+export const auth = betterAuth({
+  // ...your config
+  plugins: [nextCookies()],
+});
+```
+
+---
+
+## Best Practices
+
+- Always use the provided helpers for session and authentication management.
+- Use `auth.api.getSession` on the server and `useSession` on the client.
+- For social login, use the `signIn.social` method from the client.
+- Protect API routes and server actions by checking the session.
+
+---
+
+## References
+
+- [Better Auth Next.js Integration Docs](mdc:https:/www.better-auth.com/docs/integrations/next)
+- [Better Auth API Reference](mdc:https:/www.better-auth.com/docs/api)

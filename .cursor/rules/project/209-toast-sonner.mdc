@@ -1,0 +1,48 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# How to Use Toast Notifications with Sonner (`sonner.tsx`)
+
+## Context
+
+We use the [Sonner](https://sonner.emilkowal.ski/) library for toast notifications in our application.  
+The component wrapper is defined in `src/components/ui/sonner.tsx` and is named `Toaster`.  
+It is a Client Component and automatically adapts to the current theme using `next-themes`.
+
+## Usage
+
+- Import and render the `Toaster` component **once** at the root of your app (e.g., in `layout.tsx` or `_app.tsx`).
+- Use the Sonner API (`import { toast } from "sonner"`) to trigger notifications anywhere in your client-side code.
+
+## Example
+
+```tsx
+// In your layout or root component
+import { Toaster } from "@/components/ui/sonner";
+
+export function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Toaster />
+      {children}
+    </>
+  );
+}
+```
+
+```tsx
+// In any client component
+"use client";
+import { toast } from "sonner";
+
+export function MyButton() {
+  return (
+    <button
+      onClick={() => toast.success("Operation successful!")}
+    >
+      Show Toast
+    </button>
+  );
+}
