@@ -99,7 +99,7 @@ export const GTAMap = (props: GTAMapProps) => {
 			var mymap = L.map(mapRef.current!, {
 				crs: CUSTOM_CRS,
 				minZoom: 1,
-				maxZoom: 5,
+				maxZoom: 10,
 				preferCanvas: true,
 				layers: [SateliteStyle],
 				center: [0, 0],
