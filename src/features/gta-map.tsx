@@ -78,6 +78,7 @@ export const GTAMap = () => {
 				{
 					minZoom: 0,
 					maxZoom: 8,
+					maxNativeZoom: 8,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "SateliteStyle map",
@@ -94,7 +95,8 @@ export const GTAMap = () => {
 				"./images/mapStyles/styleAtlas/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
-					maxZoom: 5,
+					maxZoom: 8,
+					maxNativeZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "styleAtlas map",
@@ -111,7 +113,8 @@ export const GTAMap = () => {
 				"./images/mapStyles/styleGrid/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
-					maxZoom: 5,
+					maxZoom: 8,
+					maxNativeZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "styleGrid map",
@@ -127,7 +130,7 @@ export const GTAMap = () => {
 			var mymap = L.map(mapRef.current!, {
 				crs: CUSTOM_CRS,
 				minZoom: 1,
-				maxZoom: 5,
+				maxZoom: 8,
 				preferCanvas: true,
 				layers: [SateliteStyle],
 				center: [0, 0],
@@ -147,7 +150,7 @@ export const GTAMap = () => {
 				Grid: GridStyle,
 			};
 			(window as any).mapInstance = mymap;
-			(window as any).L = L; // Stocker L dans window pour y accéder plus tard
+			(window as any).L = L;
 		});
 
 		return () => {
@@ -157,6 +160,130 @@ export const GTAMap = () => {
 			}
 		};
 	}, []);
+
+	// Fonction pour calculer la distance entre deux points
+	const calculateDistance = (
+		point1: { lat: number; lng: number },
+		point2: { lat: number; lng: number }
+	) => {
+		const dx = point2.lng - point1.lng;
+		const dy = point2.lat - point1.lat;
+		return Math.sqrt(dx * dx + dy * dy);
+	};
+
+	// Fonction pour calculer le chemin optimal avec 2-opt amélioration
+	const calculateOptimalPath = (markers: Marker[]) => {
+		if (markers.length <= 1) return markers;
+
+		// Étape 1: Algorithme du plus proche voisin
+		const visited = new Set<number>();
+		const path: Marker[] = [];
+		let currentIndex = 0;
+		path.push(markers[0]);
+		visited.add(0);
+
+		while (visited.size < markers.length) {
+			let nearestIndex = -1;
+			let nearestDistance = Infinity;
+
+			for (let i = 0; i < markers.length; i++) {
+				if (!visited.has(i)) {
+					const distance = calculateDistance(
+						{
+							lat: markers[currentIndex].lat,
+							lng: markers[currentIndex].lng,
+						},
+						{ lat: markers[i].lat, lng: markers[i].lng }
+					);
+					if (distance < nearestDistance) {
+						nearestDistance = distance;
+						nearestIndex = i;
+					}
+				}
+			}
+
+			if (nearestIndex !== -1) {
+				path.push(markers[nearestIndex]);
+				visited.add(nearestIndex);
+				currentIndex = nearestIndex;
+			}
+		}
+
+		// Étape 2: Optimisation 2-opt pour améliorer le chemin
+		let improved = true;
+		let optimizedPath = [...path];
+
+		while (improved) {
+			improved = false;
+			for (let i = 0; i < optimizedPath.length - 2; i++) {
+				for (let j = i + 2; j < optimizedPath.length; j++) {
+					const before =
+						calculateDistance(
+							{
+								lat: optimizedPath[i].lat,
+								lng: optimizedPath[i].lng,
+							},
+							{
+								lat: optimizedPath[i + 1].lat,
+								lng: optimizedPath[i + 1].lng,
+							}
+						) +
+						calculateDistance(
+							{
+								lat: optimizedPath[j].lat,
+								lng: optimizedPath[j].lng,
+							},
+							{
+								lat: optimizedPath[
+									(j + 1) % optimizedPath.length
+								].lat,
+								lng: optimizedPath[
+									(j + 1) % optimizedPath.length
+								].lng,
+							}
+						);
+
+					const after =
+						calculateDistance(
+							{
+								lat: optimizedPath[i].lat,
+								lng: optimizedPath[i].lng,
+							},
+							{
+								lat: optimizedPath[j].lat,
+								lng: optimizedPath[j].lng,
+							}
+						) +
+						calculateDistance(
+							{
+								lat: optimizedPath[i + 1].lat,
+								lng: optimizedPath[i + 1].lng,
+							},
+							{
+								lat: optimizedPath[
+									(j + 1) % optimizedPath.length
+								].lat,
+								lng: optimizedPath[
+									(j + 1) % optimizedPath.length
+								].lng,
+							}
+						);
+
+					if (after < before) {
+						const newPath = [
+							...optimizedPath.slice(0, i + 1),
+							...optimizedPath.slice(i + 1, j + 1).reverse(),
+							...optimizedPath.slice(j + 1),
+						];
+						optimizedPath = newPath;
+						improved = true;
+					}
+				}
+			}
+		}
+
+		return optimizedPath;
+	};
 
 	useEffect(() => {
 		if (
@@ -178,12 +305,32 @@ export const GTAMap = () => {
 			});
 		}
 
+		// Supprimer tous les marqueurs et polylines existants
 		mapInstanceRef.current.eachLayer((layer: any) => {
-			if (layer instanceof L.Marker) {
+			if (layer instanceof L.Marker || layer instanceof L.Polyline) {
 				mapInstanceRef.current?.removeLayer(layer);
 			}
 		});
 
+		// Calculer le chemin optimal
+		const optimalPath = calculateOptimalPath(markers);
+
+		// Dessiner la trajectoire
+		if (optimalPath.length > 1) {
+			const trajectoryPoints = optimalPath.map(
+				(marker) => [marker.lng, marker.lat] as [number, number]
+			);
+
+			const trajectory = L.polyline(trajectoryPoints, {
+				color: "#FFFF00", // Jaune clair flash
+				weight: 2,
+				opacity: 0.8, // 80% d'opacité
+				smoothFactor: 1,
+				className: "trajectory-line",
+			}).addTo(mapInstanceRef.current!);
+		}
+
+		// Ajouter les marqueurs
 		markers.forEach((marker) => {
 			L.marker([marker.lng, marker.lat], { icon: customIcon(1) })
 				.addTo(mapInstanceRef.current!)
