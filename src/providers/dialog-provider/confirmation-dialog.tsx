@@ -30,14 +30,19 @@ export type ConfirmationDialogProps = {
 					| "link";
 		  }
 		| ReactElement;
-	cancel?: { label: string; onClick?: () => void | Promise<void> };
+	cancel?: { label?: string; onClick?: () => void | Promise<void> };
 	loading?: boolean;
 	children?: ReactNode;
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
 };
 
 export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
 	return (
-		<AlertDialog open={true}>
+		<AlertDialog
+			open={props.open ?? true}
+			onOpenChange={props.onOpenChange}
+		>
 			<AlertDialogContent>
 				{props.children ? (
 					props.children
