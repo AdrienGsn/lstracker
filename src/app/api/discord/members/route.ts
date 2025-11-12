@@ -11,6 +11,7 @@ async function getAllMembers(
 	limit = 1000
 ): Promise<DiscordMember[]> {
 	const members: DiscordMember[] = [];
+
 	let after = "0";
 	let hasMore = true;
 
@@ -58,6 +59,7 @@ function formatMember(
 
 	return {
 		id: member.user.id,
+		email: member.user.email,
 		username: member.user.username,
 		discriminator: member.user.discriminator,
 		displayName: member.user.global_name || member.user.username,
