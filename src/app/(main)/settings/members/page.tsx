@@ -14,7 +14,6 @@ import { membersTable } from "@/features/settings/members-table/columns";
 import { auth } from "@/lib/auth";
 import { hasPermission } from "@/lib/auth/org";
 import { requiredCurrentUserCache } from "@/lib/cache";
-import { logger } from "@/lib/logger";
 import type { PageParams } from "@/types/next";
 import { MemberWithUser } from "@/types/organization";
 
@@ -28,7 +27,7 @@ export default async function RoutePage(props: PageParams) {
 	const hasPermissionToInvite = await hasPermission({
 		invitation: ["create"],
 	});
-	logger.debug(hasPermissionToInvite);
+
 	return (
 		<Layout>
 			<LayoutHeader>
