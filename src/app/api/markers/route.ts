@@ -11,7 +11,7 @@ export const GET = orgRoute.handler(async (_req, { ctx }) => {
 
 	const markers = await prisma.marker.findMany({
 		where: {
-			organizationId: ctx.organization.id,
+			organizationId: data?.session.activeOrganizationId!,
 			teamId: null,
 		},
 	});
@@ -19,7 +19,7 @@ export const GET = orgRoute.handler(async (_req, { ctx }) => {
 	const teamMarkers = data?.session.activeTeamId
 		? await prisma.marker.findMany({
 				where: {
-					organizationId: ctx.organization.id,
+					organizationId: data.session.activeOrganizationId!,
 					teamId: data?.session.activeTeamId,
 				},
 		  })
