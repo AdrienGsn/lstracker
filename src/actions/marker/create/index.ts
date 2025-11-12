@@ -14,7 +14,7 @@ export const createMarkerAction = orgAction
 	.metadata({ permissions: { marker: ["create"] } })
 	.inputSchema(CreateMarkerSchema)
 	.action(async ({ parsedInput: { label, lat, lng, icon, teamId }, ctx }) => {
-		await prisma?.marker.create({
+		await prisma.marker.create({
 			data: {
 				userId: ctx.user.id,
 				organizationId: ctx.session.activeOrganizationId!,
@@ -27,7 +27,7 @@ export const createMarkerAction = orgAction
 		});
 
 		if (teamId) {
-			const team = await prisma?.team.findUnique({
+			const team = await prisma.team.findUnique({
 				where: { id: teamId },
 			});
 

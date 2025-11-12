@@ -8,12 +8,13 @@ import {
 } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import { requiredCurrentUserCache } from "@/lib/cache";
+import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 
 export default async function RoutePage(props: PageParams) {
 	const { session } = await requiredCurrentUserCache();
 
-	const organization = await prisma?.organization.findUnique({
+	const organization = await prisma.organization.findUnique({
 		where: { id: session?.activeOrganizationId! },
 		include: {
 			markers: true,
