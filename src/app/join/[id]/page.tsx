@@ -1,8 +1,9 @@
+import { notFound } from "next/navigation";
+
 import { JoinCard } from "@/features/join-card";
 import { requiredCurrentUserCache } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
-import { notFound } from "next/navigation";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { user } = await requiredCurrentUserCache();

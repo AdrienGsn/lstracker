@@ -1,9 +1,9 @@
 import { createZodRoute } from "next-zod-route";
 import { NextResponse } from "next/server";
+import z from "zod";
 
 import { logger } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
-import z from "zod";
 import { currentUser } from "./auth/helper";
 import { hasPermission } from "./auth/org";
 import { AuthPermissionSchema, RolesKeys } from "./auth/permissions";

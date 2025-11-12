@@ -1,8 +1,13 @@
 "use client";
 
+import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Ellipsis, Eye, Shield, Trash } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { banUserAction } from "@/actions/admin/user/ban";
 import { deleteUserAction } from "@/actions/admin/user/delete";
@@ -19,11 +24,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Typography } from "@/components/ui/typography";
 import { dialog } from "@/providers/dialog-provider";
-import { User } from "@prisma/client";
-import { useAction } from "next-safe-action/hooks";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export const usersTable: ColumnDef<User>[] = [
 	{

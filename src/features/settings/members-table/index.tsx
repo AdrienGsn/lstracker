@@ -9,6 +9,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { User2 } from "lucide-react";
 
 import {
 	Empty,
@@ -27,7 +28,6 @@ import {
 } from "@/components/ui/table";
 import { TablePagination } from "@/features/data-table/table-pagination";
 import { MemberWithUser } from "@/types/organization";
-import { User2 } from "lucide-react";
 
 interface DataTableProps<TData extends MemberWithUser, TValue> {
 	columns: ColumnDef<TData, TValue>[];

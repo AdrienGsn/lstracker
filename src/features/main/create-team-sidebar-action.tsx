@@ -1,5 +1,9 @@
 "use client";
 
+import { Plus } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+
 import { createTeamAction } from "@/actions/organization/team/create";
 import {
 	CreateTeamSchema,
@@ -26,9 +30,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { SidebarGroupAction } from "@/components/ui/sidebar";
 import { dialog } from "@/providers/dialog-provider";
-import { Plus } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
 
 const CreateForm = () => {
 	const form = useZodForm({

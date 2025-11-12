@@ -1,10 +1,11 @@
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
 import { Layout } from "@/components/page/layout";
 import { MemberPage } from "@/features/settings/member-page";
 import { prisma } from "@/lib/prisma";
 import { MarkerWithRelations } from "@/types/marker";
 import type { PageParams } from "@/types/next";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;

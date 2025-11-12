@@ -1,3 +1,5 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
@@ -17,8 +19,6 @@ import {
 } from "@/components/ui/item";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;

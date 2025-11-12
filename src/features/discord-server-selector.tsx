@@ -1,3 +1,9 @@
+"use client";
+
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FieldValues } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
 import {
 	FormControl,
@@ -14,9 +20,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { FieldValues } from "react-hook-form";
 
 interface DiscordGuild {
 	id: string;

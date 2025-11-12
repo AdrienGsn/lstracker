@@ -1,5 +1,6 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Team } from "@prisma/client";
+
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { CreateMarkerBtn } from "./create-marker-btn";
 
 export type MapHeaderProps = {

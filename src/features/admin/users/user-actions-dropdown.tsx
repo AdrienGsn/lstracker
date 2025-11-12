@@ -1,5 +1,10 @@
 "use client";
 
+import { Ellipsis, Eye, Shield, Trash } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 import { banUserAction } from "@/actions/admin/user/ban";
 import {
 	BanUserSchema,
@@ -37,10 +42,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth/client";
 import { dialog } from "@/providers/dialog-provider";
-import { Ellipsis, Eye, Shield, Trash } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export type UserActionsDropdownProps = {
 	userId: string;

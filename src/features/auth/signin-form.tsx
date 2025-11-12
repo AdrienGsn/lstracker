@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
+
 import { DiscordIcon } from "@/components/icons/discord-icon";
 import { LoadingButton } from "@/components/loading-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authConfig } from "@/config/auth";
 import { authClient } from "@/lib/auth/client";
-import { useState } from "react";
 
 export const SigninForm = () => {
 	const [loading, setLoading] = useState(false);

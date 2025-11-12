@@ -1,5 +1,9 @@
 "use client";
 
+import { CloudUpload, X } from "lucide-react";
+import * as React from "react";
+import { FieldValues } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
 import {
 	FileUpload,
@@ -20,9 +24,6 @@ import {
 	FormMessage,
 	type FormProps,
 } from "@/components/ui/form";
-import { CloudUpload, X } from "lucide-react";
-import * as React from "react";
-import { FieldValues } from "react-hook-form";
 
 export interface ImageUploaderProps<T extends FieldValues> {
 	form: FormProps<T>["form"];

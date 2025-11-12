@@ -1,9 +1,10 @@
+import type { LayoutParams } from "@/types/next";
+import { cookies } from "next/headers";
+
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AccountHeader } from "@/features/account/account-header";
 import { AccountSidebar } from "@/features/account/account-sidebar";
 import { requiredCurrentUserCache } from "@/lib/cache";
-import type { LayoutParams } from "@/types/next";
-import { cookies } from "next/headers";
 
 export default async function RoutePage(props: LayoutParams) {
 	const { user } = await requiredCurrentUserCache();

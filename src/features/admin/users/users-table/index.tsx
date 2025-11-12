@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@prisma/client";
 import {
 	ColumnDef,
 	flexRender,
@@ -9,6 +10,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { User as UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -28,8 +30,6 @@ import {
 } from "@/components/ui/table";
 import { TableFilter } from "@/features/data-table/table-filter";
 import { TablePagination } from "@/features/data-table/table-pagination";
-import { User } from "@prisma/client";
-import { User as UserIcon } from "lucide-react";
 
 interface DataTableProps<TData extends User, TValue> {
 	columns: ColumnDef<TData, TValue>[];

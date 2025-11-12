@@ -1,5 +1,6 @@
 "use client";
 
+import { Session } from "@prisma/client";
 import {
 	ColumnDef,
 	flexRender,
@@ -9,6 +10,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { Laptop } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -27,8 +29,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { TablePagination } from "@/features/data-table/table-pagination";
-import { Session } from "@prisma/client";
-import { Laptop } from "lucide-react";
 
 interface DataTableProps<TData extends Session, TValue> {
 	columns: ColumnDef<TData, TValue>[];

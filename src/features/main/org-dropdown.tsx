@@ -8,8 +8,10 @@ import {
 	Shield,
 	User,
 } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { switchOrgAction } from "@/actions/organization/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -32,8 +34,6 @@ import { ThemeSelector } from "@/features/theme-selector";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { authClient } from "@/lib/auth/client";
 import { dialog } from "@/providers/dialog-provider";
-import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
 import { CreateOrgBtn } from "./create-org-btn";
 
 export const OrgDropdown = () => {

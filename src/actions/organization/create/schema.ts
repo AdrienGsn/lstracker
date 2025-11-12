@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const CreateOrgSchema = z.object({
 	name: z
 		.string({ error: "Veuillez entrer un nom" })

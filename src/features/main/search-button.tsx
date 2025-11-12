@@ -1,5 +1,6 @@
 "use client";
 
+import { Marker, Team } from "@prisma/client";
 import {
 	Home,
 	LucideIcon,
@@ -9,6 +10,7 @@ import {
 	TriangleAlert,
 	User2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -32,8 +34,6 @@ import { CtrlOrMeta, Kbd } from "@/components/ui/kbd";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth/client";
 import { AuthPermission, AuthRole, RolesKeys } from "@/lib/auth/permissions";
-import { Marker, Team } from "@prisma/client";
-import { useRouter } from "next/navigation";
 
 type SearchNavigationAccessControl = {
 	roles?: AuthRole[];

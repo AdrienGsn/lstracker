@@ -1,7 +1,8 @@
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 export type LogoProps = {
 	className?: string;

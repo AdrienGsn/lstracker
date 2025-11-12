@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { sendToDiscordChannelAction } from "@/actions/discord/channel";
 import { siteConfig } from "@/config/site";
 import { getServerUrl } from "@/lib/get-server-url";
@@ -7,7 +9,6 @@ import { logger } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import { orgAction } from "@/lib/safe-action";
 import { parseMetadata } from "@/utils/metadata";
-import { revalidatePath } from "next/cache";
 import { CreateMarkerSchema } from "./schema";
 
 export const createMarkerAction = orgAction

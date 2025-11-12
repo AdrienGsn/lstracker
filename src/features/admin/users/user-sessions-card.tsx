@@ -1,6 +1,9 @@
 "use client";
 
 import { Session } from "@prisma/client";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { deleteAllUserSessionsAction } from "@/actions/admin/user/session/delete-all";
 import { LoadingButton } from "@/components/loading-button";
@@ -13,9 +16,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { dialog } from "@/providers/dialog-provider";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { UserSessionsTable } from "./user-sessions-table";
 import { userSessionsTable } from "./user-sessions-table/columns";
 

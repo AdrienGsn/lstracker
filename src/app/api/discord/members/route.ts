@@ -1,8 +1,9 @@
+import { NextResponse } from "next/server";
+
 import { ENV } from "@/lib/env";
 import { orgRoute } from "@/lib/safe-route";
 import { DiscordMember, FormattedDiscordMember } from "@/types/discord";
 import { parseMetadata } from "@/utils/metadata";
-import { NextResponse } from "next/server";
 
 async function getAllMembers(
 	guildId: string,

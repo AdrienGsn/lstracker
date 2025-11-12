@@ -1,9 +1,10 @@
 "use server";
 
+import { EmbedBuilder, TextChannel } from "discord.js";
+
 import { getDiscordClient } from "@/lib/discord";
 import { logger } from "@/lib/logger";
 import { ActionError, authAction } from "@/lib/safe-action";
-import { EmbedBuilder, TextChannel } from "discord.js";
 import { SendToDiscordChannelSchema } from "./schema";
 
 export const sendToDiscordChannelAction = authAction

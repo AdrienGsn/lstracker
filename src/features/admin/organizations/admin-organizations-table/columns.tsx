@@ -1,5 +1,6 @@
 "use client";
 
+import { Organization } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Ellipsis, Eye, Trash } from "lucide-react";
@@ -19,7 +20,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Typography } from "@/components/ui/typography";
 import { dialog } from "@/providers/dialog-provider";
-import { Organization } from "@prisma/client";
 
 export const adminOrganizationsTable: ColumnDef<Organization>[] = [
 	{

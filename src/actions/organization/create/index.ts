@@ -1,10 +1,11 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import { authAction } from "@/lib/safe-action";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+
+import { auth } from "@/lib/auth";
+import { authAction } from "@/lib/safe-action";
 import { CreateOrgSchema } from "./schema";
 
 export const createOrgAction = authAction

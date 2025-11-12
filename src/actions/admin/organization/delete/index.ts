@@ -1,8 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
+
 import { auth } from "@/lib/auth";
 import { adminAction } from "@/lib/safe-action";
-import { headers } from "next/headers";
 import { DeleteOrganizationSchema } from "./schema";
 
 export const deleteOrganizationAction = adminAction

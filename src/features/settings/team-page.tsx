@@ -1,5 +1,11 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 import { deleteTeamAction } from "@/actions/organization/team/delete";
 import { updateTeamAction } from "@/actions/organization/team/update";
 import {
@@ -26,11 +32,6 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { dialog } from "@/providers/dialog-provider";
 import { TeamWithMembersAndMarkers } from "@/types/organization";
 import { parseMetadata } from "@/utils/metadata";
-import { ArrowLeft } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { FormUnsavedBar } from "../form/form-unsaved-bar";
 import { DiscordChannelSelector } from "./discord-channel-selector";
 import { TeamMarkersTable } from "./team-markers-table";

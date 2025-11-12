@@ -1,5 +1,11 @@
 "use client";
 
+import { Invitation, Organization, User } from "@prisma/client";
+import dayjs from "dayjs";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/router";
+import { toast } from "sonner";
+
 import { joinOrganizationAction } from "@/actions/organization/join";
 import { LoadingButton } from "@/components/loading-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,11 +17,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-import { Invitation, Organization, User } from "@prisma/client";
-import dayjs from "dayjs";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/router";
-import { toast } from "sonner";
 
 export type JoinCardProps = {
 	invitation: Invitation & {

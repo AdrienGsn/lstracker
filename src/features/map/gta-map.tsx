@@ -1,5 +1,7 @@
 "use client";
 
+import { Marker } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 import type { Map } from "leaflet";
 import { Copy, Fullscreen, Pencil, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -18,8 +20,6 @@ import {
 } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loader";
 import { authClient } from "@/lib/auth/client";
-import { Marker } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
 
 const fetchMarkers = async () => {
 	const response = await fetch("/api/markers");

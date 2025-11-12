@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js";
+
 import { getServerUrl } from "./get-server-url";
 
 let client: Client | null = null;
