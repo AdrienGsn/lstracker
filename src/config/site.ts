@@ -2,10 +2,10 @@ import { SiteConfig } from "@/types/config/site";
 
 export const siteConfig: SiteConfig = {
 	title: "LSTracker",
-	prodUrl: "https://lstracker.vercel.app",
-	domain: "lstracker.vercel.app",
+	prodUrl: "https://lstracker.addevelopment.fr",
+	domain: "lstracker.addevelopment.fr",
 	company: {
-		name: "RoyalRP",
+		name: "LSTracker",
 		address: "1234 Main St, Anytown, USA",
 	},
 	email: {

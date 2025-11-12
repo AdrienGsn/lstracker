@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js";
+import { getServerUrl } from "./get-server-url";
 
 let client: Client | null = null;
 
@@ -18,9 +19,9 @@ export function getDiscordClient() {
 			client.user.setPresence({
 				activities: [
 					{
-						name: "lstracker.vercel.app/",
+						name: getServerUrl(),
 						type: 3, // Listening
-						url: "https://lstracker.vercel.app/",
+						url: getServerUrl(),
 					},
 				],
 				status: "online",
