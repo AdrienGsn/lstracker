@@ -1,6 +1,9 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { auth } from "@/lib/auth";
 import { ENV } from "@/lib/env";
+import { prisma } from "@/lib/prisma";
 import { orgRoute } from "@/lib/safe-route";
 import { DiscordMember, FormattedDiscordMember } from "@/types/discord";
 import { parseMetadata } from "@/utils/metadata";
@@ -77,8 +80,16 @@ export const GET = orgRoute
 	.metadata({ permissions: { invitation: ["create"] } })
 	.handler(async (request, { ctx }) => {
 		try {
+			const data = await auth.api.getSession({
+				headers: await headers(),
+			});
+
+			const organization = await prisma.organization.findUnique({
+				where: { id: data?.session.activeOrganizationId! },
+			});
+
 			const metadata = parseMetadata<{ guildId: string }>(
-				ctx.organization.metadata
+				organization?.metadata
 			);
 
 			const guildId = metadata?.guildId;
