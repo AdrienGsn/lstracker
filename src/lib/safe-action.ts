@@ -31,13 +31,13 @@ export const action = createSafeActionClient({
 });
 
 export const authAction = action.use(async ({ next }) => {
-	const { user } = await currentUser();
+	const { user, session } = await currentUser();
 
 	if (!user) {
 		throw new ActionError("You must be logged in !");
 	}
 
-	return next({ ctx: { user } });
+	return next({ ctx: { user, session } });
 });
 
 export const adminAction = authAction.use(async ({ next, ctx }) => {
@@ -69,7 +69,7 @@ export const orgAction = createSafeActionClient({
 		}
 
 		if (metadata.permissions) {
-			const hasAccess = hasPermission(metadata.permissions);
+			const hasAccess = await hasPermission(metadata.permissions);
 
 			if (!hasAccess) {
 				throw new ActionError(
@@ -78,7 +78,13 @@ export const orgAction = createSafeActionClient({
 			}
 		}
 
-		return next({ ctx: { user: session.user, role: metadata.role } });
+		return next({
+			ctx: {
+				user: session.user,
+				session: session.session,
+				role: metadata.role,
+			},
+		});
 	} catch (error) {
 		if (error instanceof ActionError) {
 			throw error;

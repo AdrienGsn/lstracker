@@ -13,8 +13,10 @@ import {
 } from "@/components/page/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import {
 	Item,
+	ItemActions,
 	ItemContent,
 	ItemDescription,
 	ItemFooter,
@@ -22,11 +24,15 @@ import {
 	ItemTitle,
 } from "@/components/ui/item";
 import { UserActionsDropdown } from "@/features/admin/users/user-actions-dropdown";
+import { UserAuthenticationProvidersCard } from "@/features/admin/users/user-authentication-providers-card";
 import { UserOrganizationsCard } from "@/features/admin/users/user-organizations-card";
 import { UserSessionsCard } from "@/features/admin/users/user-sessions-card";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { SocialProvider } from "@/types/auth";
 import type { PageParams } from "@/types/next";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;
@@ -61,9 +67,20 @@ export default async function RoutePage(props: PageParams<{ id: string }>) {
 		headers: await headers(),
 	});
 
+	const providers = await auth.api.listUserAccounts({
+		headers: await headers(),
+	});
+
 	return (
 		<Layout>
 			<LayoutHeader>
+				<Link
+					href="/admin/users"
+					className={buttonVariants({ variant: "link" })}
+				>
+					<ArrowLeft />
+					Back to users
+				</Link>
 				<LayoutTitle>User Details</LayoutTitle>
 				<LayoutDescription>
 					View and manage user information and organization
@@ -71,7 +88,10 @@ export default async function RoutePage(props: PageParams<{ id: string }>) {
 				</LayoutDescription>
 			</LayoutHeader>
 			<LayoutActions>
-				<UserActionsDropdown userId={user.id} />
+				<UserActionsDropdown
+					userId={user.id}
+					banned={user.banned || false}
+				/>
 			</LayoutActions>
 			<LayoutContent className="flex flex-col gap-4">
 				<Item variant="muted">
@@ -104,11 +124,19 @@ export default async function RoutePage(props: PageParams<{ id: string }>) {
 							{dayjs(user.createdAt).format("DD/MM/YYYY")}
 						</span>
 					</ItemFooter>
+					<ItemActions>
+						{user.banned ? (
+							<Badge variant="destructive">Bannis</Badge>
+						) : null}
+					</ItemActions>
 				</Item>
 				<UserOrganizationsCard organizations={orgs} />
 				<UserSessionsCard
 					userId={user.id}
 					sessions={sessions as Session[]}
+				/>
+				<UserAuthenticationProvidersCard
+					providers={providers as SocialProvider[]}
 				/>
 			</LayoutContent>
 		</Layout>

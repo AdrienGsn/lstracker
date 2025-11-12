@@ -1,13 +1,17 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { adminAction } from "@/lib/safe-action";
+import { headers } from "next/headers";
 import { DeleteOrganizationSchema } from "./schema";
 
 export const deleteOrganizationAction = adminAction
 	.inputSchema(DeleteOrganizationSchema)
 	.action(async ({ parsedInput: { orgId }, ctx }) => {
-		await prisma.organization.delete({
-			where: { id: orgId },
+		return await auth.api.deleteOrganization({
+			body: {
+				organizationId: orgId,
+			},
+			headers: await headers(),
 		});
 	});

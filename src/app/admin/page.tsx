@@ -16,7 +16,7 @@ export default async function RoutePage(props: PageParams) {
 					Manage users and organizations
 				</LayoutDescription>
 			</LayoutHeader>
-			<LayoutContent>AA</LayoutContent>
+			<LayoutContent></LayoutContent>
 		</Layout>
 	);
 }

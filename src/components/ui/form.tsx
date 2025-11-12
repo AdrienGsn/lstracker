@@ -26,7 +26,7 @@ type FormProps<T extends FieldValues = FieldValues> = {
 	className?: string;
 	children: React.ReactNode | React.ReactNode[];
 	form: UseFormReturn<T>;
-	onSubmit: SubmitHandler<FieldValues>;
+	onSubmit: SubmitHandler<T>;
 } & UseFormProps<T>;
 
 const Form = FormProvider;

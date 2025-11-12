@@ -2,9 +2,11 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Ellipsis, Eye, Trash } from "lucide-react";
+import { Ellipsis, Eye, Shield, Trash } from "lucide-react";
 
+import { banUserAction } from "@/actions/admin/user/ban";
 import { deleteUserAction } from "@/actions/admin/user/delete";
+import { unbanUserAction } from "@/actions/admin/user/unban";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +14,7 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Typography } from "@/components/ui/typography";
@@ -66,10 +69,32 @@ export const usersTable: ColumnDef<User>[] = [
 		},
 	},
 	{
+		accessorKey: "banned",
+		header: "Bannis",
+		cell: ({ row }) => {
+			return (
+				<Badge
+					variant={row.original.banned ? "destructive" : "secondary"}
+				>
+					{row.original.banned ? "oui" : "non"}
+				</Badge>
+			);
+		},
+	},
+	{
 		accessorKey: "createdAt",
 		header: "Created",
 		cell: ({ row }) => {
-			return dayjs(row.original.createdAt).format("DD/MM/YYYY");
+			return (
+				<div className="flex flex-col">
+					<Typography>
+						{dayjs(row.original.createdAt).format("DD/MM/YYYY")}
+					</Typography>
+					<Typography variant="muted">
+						{dayjs(row.original.createdAt).format("HH:mm:ss")}
+					</Typography>
+				</div>
+			);
 		},
 	},
 	{
@@ -77,16 +102,41 @@ export const usersTable: ColumnDef<User>[] = [
 		cell: ({ row }) => {
 			const router = useRouter();
 
-			const { executeAsync, isPending } = useAction(deleteUserAction, {
-				onSuccess: () => {
-					router.refresh();
+			const { executeAsync: deleteUser, isPending: deleteUserPending } =
+				useAction(deleteUserAction, {
+					onSuccess: () => {
+						router.refresh();
 
-					toast.success("User has been deleted !");
-				},
-				onError: ({ error }) => {
-					toast.error(error.serverError);
-				},
-			});
+						toast.success("User has been deleted !");
+					},
+					onError: ({ error }) => {
+						toast.error(error.serverError);
+					},
+				});
+
+			const { executeAsync: banUser, isPending: banUserPending } =
+				useAction(banUserAction, {
+					onSuccess: () => {
+						router.refresh;
+
+						toast.success("L'utilisateur a bien été banni !");
+					},
+					onError: ({ error }) => {
+						toast.error(error.serverError);
+					},
+				});
+
+			const { executeAsync: unbanUser, isPending: unbanUserPending } =
+				useAction(unbanUserAction, {
+					onSuccess: () => {
+						router.replace("/admin/users");
+
+						toast.success("L'utilisateur a bien été débanni !");
+					},
+					onError: ({ error }) => {
+						toast.error(error.serverError);
+					},
+				});
 
 			return (
 				<DropdownMenu>
@@ -102,7 +152,45 @@ export const usersTable: ColumnDef<User>[] = [
 								Voir
 							</Link>
 						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						{row.original.banned ? (
+							<DropdownMenuItem
+								className="cursor-pointer"
+								variant="destructive"
+								onClick={() => {
+									dialog.add({
+										title: "Êtes-vous sûr ?",
+										description:
+											"Cette action retirera le bannissement de cet utilisateur. Êtes-vous sûr de vouloir continuer ?",
+										action: {
+											label: "Débannir",
+											variant: "destructive",
+											onClick: async () => {
+												await unbanUser({
+													userId: row.original.id,
+												});
+											},
+										},
+										loading: unbanUserPending,
+									});
+								}}
+							>
+								<Shield className="size-5" />
+								Débannir
+							</DropdownMenuItem>
+						) : (
+							<DropdownMenuItem
+								className="cursor-pointer"
+								variant="destructive"
+								onClick={() => {}}
+							>
+								<Shield className="size-5" />
+								Bannir
+							</DropdownMenuItem>
+						)}
 						<DropdownMenuItem
+							className="cursor-pointer"
+							variant="destructive"
 							onClick={() => {
 								dialog.add({
 									title: "Êtes vous sur ?",
@@ -112,16 +200,16 @@ export const usersTable: ColumnDef<User>[] = [
 										label: "Supprimer",
 										variant: "destructive",
 										onClick: () => {
-											executeAsync({
+											deleteUser({
 												userId: row.original.id,
 											});
 										},
 									},
-									loading: isPending,
+									loading: deleteUserPending,
 								});
 							}}
 						>
-							<Trash className="size-5 text-red-500" />
+							<Trash className="size-5" />
 							Supprimer
 						</DropdownMenuItem>
 					</DropdownMenuContent>

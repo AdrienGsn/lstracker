@@ -1,9 +1,11 @@
+import { Breadcrumb } from "@/components/page/breadcrumb";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export const MainHeader = () => {
 	return (
-		<header className="flex items-center justify-between w-full z-50 p-4 absolute top-0 left-0">
+		<header className="flex items-center gap-4 w-full p-4 sticky top-0 backdrop-blur-2xl z-50">
 			<SidebarTrigger />
+			<Breadcrumb />
 		</header>
 	);
 };

@@ -1,15 +1,24 @@
 "use client";
 
-import { ChevronsUpDown, Home, LogOut, Shield } from "lucide-react";
+import {
+	Check,
+	ChevronsUpDown,
+	Home,
+	LogOut,
+	Shield,
+	User,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { switchOrgAction } from "@/actions/organization/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
+	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -23,12 +32,33 @@ import { ThemeSelector } from "@/features/theme-selector";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { authClient } from "@/lib/auth/client";
 import { dialog } from "@/providers/dialog-provider";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { CreateOrgBtn } from "./create-org-btn";
 
 export const OrgDropdown = () => {
 	const { state } = useSidebar();
 	const { user } = useCurrentUser();
 	const router = useRouter();
-	const { data: org } = authClient.useActiveOrganization();
+
+	const { data: activeOrg } = authClient.useActiveOrganization();
+	const { data: orgs, isPending } = authClient.useListOrganizations();
+
+	const { executeAsync: switchOrg, isPending: switchOrgPending } = useAction(
+		switchOrgAction,
+		{
+			onSuccess: ({ data }) => {
+				if (typeof window !== "undefined") {
+					window.location.reload();
+				}
+
+				toast.success(`Basculement vers ${data?.name} réussi`);
+			},
+			onError: ({ error }) => {
+				toast.error(error.serverError);
+			},
+		}
+	);
 
 	return (
 		<SidebarMenu>
@@ -40,12 +70,12 @@ export const OrgDropdown = () => {
 							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
 							<Avatar className="size-8">
-								{org?.logo ? (
-									<AvatarImage src={org.logo} />
+								{activeOrg?.logo ? (
+									<AvatarImage src={activeOrg.logo} />
 								) : null}
-								{!org?.logo ? (
+								{!activeOrg?.logo ? (
 									<AvatarFallback className="uppercase">
-										{org?.name?.slice(0, 2)}
+										{activeOrg?.name?.slice(0, 2)}
 									</AvatarFallback>
 								) : null}
 							</Avatar>
@@ -55,7 +85,7 @@ export const OrgDropdown = () => {
 										variant="small"
 										className="truncate"
 									>
-										{org?.name}
+										{activeOrg?.name}
 									</Typography>
 								</div>
 							) : null}
@@ -66,22 +96,53 @@ export const OrgDropdown = () => {
 						side="bottom"
 						className="min-w-[250px]"
 					>
-						<div className="grid flex-1 text-left leading-tight px-2 py-1.5">
-							<Typography variant="small" className="truncate">
-								{user?.name}
-							</Typography>
-							<Typography
-								variant="muted"
-								className="truncate text-xs"
-							>
-								{user?.email}
-							</Typography>
-						</div>
+						{orgs &&
+							orgs.map((org) => (
+								<DropdownMenuItem
+									key={org.id}
+									disabled={switchOrgPending}
+									onClick={async () => {
+										if (org.id !== activeOrg?.id) {
+											await switchOrg({
+												organizationId: org.id,
+											});
+										}
+									}}
+								>
+									<Avatar className="size-6 text-xs">
+										{org?.logo ? (
+											<AvatarImage src={org.logo} />
+										) : null}
+										{!org?.logo ? (
+											<AvatarFallback className="uppercase">
+												{org?.name?.slice(0, 2)}
+											</AvatarFallback>
+										) : null}
+									</Avatar>
+									<Typography className="truncate">
+										{org.name}
+									</Typography>
+
+									{activeOrg?.id === org.id ? (
+										<DropdownMenuShortcut>
+											<Check />
+										</DropdownMenuShortcut>
+									) : null}
+								</DropdownMenuItem>
+							))}
+						<CreateOrgBtn />
+
 						<DropdownMenuSeparator />
 						<DropdownMenuItem asChild>
 							<Link href="/" className="cursor-pointer">
 								<Home className="size-5" />
 								Accueil
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<Link href="/account" className="cursor-pointer">
+								<User className="size-5" />
+								Mon compte
 							</Link>
 						</DropdownMenuItem>
 						{user?.role === "admin" ? (

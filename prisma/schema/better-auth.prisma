@@ -18,6 +18,7 @@ model User {
     invitations Invitation[]
     BugReport   BugReport[]
     teamMembers TeamMember[]
+    markers     Marker[]
 
     @@unique([email])
     @@map("user")
@@ -80,7 +81,7 @@ model Verification {
 model Organization {
     id       String  @id @default(cuid())
     name     String
-    slug     String?
+    slug     String
     logo     String?
     metadata String?
 
@@ -90,6 +91,7 @@ model Organization {
     members     Member[]
     invitations Invitation[]
     teams       Team[]
+    markers     Marker[]
 
     @@unique([slug])
     @@map("organization")
@@ -114,13 +116,15 @@ model Member {
 model Invitation {
     id             String   @id @default(cuid())
     organizationId String
+    teamId         String?
     email          String
-    role           String?
+    role           String
     status         String
     expiresAt      DateTime
     inviterId      String
 
     organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    team         Team?        @relation(fields: [teamId], references: [id], onDelete: Cascade)
     inviter      User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
     @@map("invitation")
@@ -129,7 +133,6 @@ model Invitation {
 model Team {
     id             String  @id @default(cuid())
     name           String
-    slug           String
     organizationId String
     metadata       String?
 
@@ -137,9 +140,11 @@ model Team {
     updatedAt DateTime @updatedAt
 
     organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-    members      TeamMember[]
 
-    @@unique([organizationId, slug])
+    members     TeamMember[]
+    markers     Marker[]
+    invitations Invitation[]
+
     @@map("team")
 }
 

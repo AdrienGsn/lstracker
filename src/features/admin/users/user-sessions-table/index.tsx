@@ -12,6 +12,13 @@ import {
 import { useRouter } from "next/navigation";
 
 import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
+import {
 	Table,
 	TableBody,
 	TableCell,
@@ -21,6 +28,7 @@ import {
 } from "@/components/ui/table";
 import { TablePagination } from "@/features/data-table/table-pagination";
 import { Session } from "@prisma/client";
+import { Laptop } from "lucide-react";
 
 interface DataTableProps<TData extends Session, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -87,7 +95,18 @@ export function UserSessionsTable<TData extends Session, TValue>({
 								colSpan={columns.length}
 								className="h-24 text-center"
 							>
-								No results.
+								<Empty>
+									<EmptyHeader>
+										<EmptyMedia variant="icon">
+											<Laptop />
+										</EmptyMedia>
+										<EmptyTitle>Aucune Session</EmptyTitle>
+										<EmptyDescription>
+											Vous n'avez aucune session active
+											pour cet utilisateur pour le moment.
+										</EmptyDescription>
+									</EmptyHeader>
+								</Empty>
 							</TableCell>
 						</TableRow>
 					)}

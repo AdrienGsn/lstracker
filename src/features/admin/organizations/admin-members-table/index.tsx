@@ -1,0 +1,114 @@
+"use client";
+
+import {
+	ColumnDef,
+	flexRender,
+	getCoreRowModel,
+	getPaginationRowModel,
+	useReactTable,
+} from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+
+import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import { TablePagination } from "@/features/data-table/table-pagination";
+import { MemberWithUser } from "@/types/organization";
+import { User } from "lucide-react";
+
+interface DataTableProps<TData extends MemberWithUser, TValue> {
+	columns: ColumnDef<TData, TValue>[];
+	data: TData[];
+}
+
+export function AdminMembersTable<TData extends MemberWithUser, TValue>({
+	columns,
+	data,
+}: DataTableProps<TData, TValue>) {
+	const router = useRouter();
+
+	const table = useReactTable({
+		data,
+		columns,
+		getCoreRowModel: getCoreRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
+	});
+
+	return (
+		<div className="flex flex-col gap-4">
+			<Table>
+				<TableHeader>
+					{table.getHeaderGroups().map((headerGroup) => (
+						<TableRow key={headerGroup.id}>
+							{headerGroup.headers.map((header) => {
+								return (
+									<TableHead key={header.id}>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef
+														.header,
+													header.getContext()
+											  )}
+									</TableHead>
+								);
+							})}
+						</TableRow>
+					))}
+				</TableHeader>
+				<TableBody>
+					{table.getRowModel().rows?.length ? (
+						table.getRowModel().rows.map((row) => (
+							<TableRow
+								key={row.id}
+								data-state={row.getIsSelected() && "selected"}
+							>
+								{row.getVisibleCells().map((cell) => (
+									<TableCell key={cell.id}>
+										{flexRender(
+											cell.column.columnDef.cell,
+											cell.getContext()
+										)}
+									</TableCell>
+								))}
+							</TableRow>
+						))
+					) : (
+						<TableRow>
+							<TableCell
+								colSpan={columns.length}
+								className="h-24 text-center"
+							>
+								<Empty>
+									<EmptyHeader>
+										<EmptyMedia variant="icon">
+											<User />
+										</EmptyMedia>
+										<EmptyTitle>Aucun Membre</EmptyTitle>
+										<EmptyDescription>
+											Vous n'avez aucun membre dans cette
+											organisation pour le moment.
+										</EmptyDescription>
+									</EmptyHeader>
+								</Empty>
+							</TableCell>
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+			<TablePagination table={table} />
+		</div>
+	);
+}

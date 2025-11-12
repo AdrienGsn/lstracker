@@ -1,6 +1,6 @@
 "use client";
 
-import { Slash } from "lucide-react";
+import { HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -38,7 +38,14 @@ export const Breadcrumb = ({ capitalizeLinks }: BreadcrumbProps) => {
 
 	return (
 		<UIBreadcrumb>
-			<BreadcrumbList>
+			<BreadcrumbList className="gap-2 rounded-md border px-3 h-8 text-sm">
+				<BreadcrumbItem>
+					<BreadcrumbLink href="/">
+						<HomeIcon className="size-4" />
+						<span className="sr-only">Home</span>
+					</BreadcrumbLink>
+				</BreadcrumbItem>
+				<BreadcrumbSeparator />
 				{pathNames.map((link, index) => {
 					const href = `/${pathNames.slice(0, index + 1).join("/")}`;
 
@@ -92,9 +99,7 @@ export const Breadcrumb = ({ capitalizeLinks }: BreadcrumbProps) => {
 									</DropdownMenu>
 								</BreadcrumbItem>
 								{pathNames.length !== index + 1 && (
-									<BreadcrumbSeparator>
-										<Slash />
-									</BreadcrumbSeparator>
+									<BreadcrumbSeparator />
 								)}
 							</div>
 						);
@@ -112,9 +117,7 @@ export const Breadcrumb = ({ capitalizeLinks }: BreadcrumbProps) => {
 								)}
 							</BreadcrumbItem>
 							{pathNames.length !== index + 1 && (
-								<BreadcrumbSeparator>
-									<Slash />
-								</BreadcrumbSeparator>
+								<BreadcrumbSeparator />
 							)}
 						</div>
 					);

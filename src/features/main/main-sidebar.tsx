@@ -1,71 +1,57 @@
 "use client";
 
-import { Check, Home, Plus, Settings, User } from "lucide-react";
+import { Check, ChevronRight, Home, Settings, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
+import { deleteTeamAction } from "@/actions/organization/team/delete";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuSeparator,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
 	Sidebar as SidebarComp,
 	SidebarContent,
 	SidebarGroup,
-	SidebarGroupAction,
 	SidebarGroupContent,
 	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
-	SidebarMenuAction,
+	SidebarMenuBadge,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarMenuSub,
+	SidebarMenuSubButton,
+	SidebarMenuSubItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { authClient } from "@/lib/auth/client";
-import { logger } from "@/lib/logger";
-import { NavigationGroup } from "@/types/navigation";
+import { dialog } from "@/providers/dialog-provider";
+import { Marker, Team } from "@prisma/client";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { CreateTeamSidebarAction } from "./create-team-sidebar-action";
 import { OrgDropdown } from "./org-dropdown";
 import { SearchButton } from "./search-button";
 
-const NAVIGATION: NavigationGroup[] = [
-	{
-		links: [
-			{
-				type: "LINK",
-				icon: User,
-				label: "links.dashboard",
-				href: "/dashboard",
-			},
-			{
-				type: "COLLAPSIBLE",
-				icon: Settings,
-				label: "links.settings.index",
-				href: "/settings",
-				subLinks: [
-					{
-						label: "links.settings.general",
-						href: "",
-					},
-					{
-						label: "links.settings.members",
-						href: "",
-					},
-					{
-						label: "links.settings.billing",
-						href: "",
-					},
-				],
-			},
-		],
-	},
-];
+export type MainSidebarProps = {
+	teams: Team[];
+	activeTeamId?: string;
+	markers: Marker[];
+};
 
-export const MainSidebar = () => {
+export const MainSidebar = (props: MainSidebarProps) => {
 	const { state } = useSidebar();
 	const pathname = usePathname();
 	const router = useRouter();
-	const { user, session } = useCurrentUser();
-	const [teams, setTeams] = useState<any[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
 
 	const hasPermissionCreateTeam = authClient.organization.checkRolePermission(
 		{
@@ -74,23 +60,15 @@ export const MainSidebar = () => {
 		}
 	);
 
-	useEffect(() => {
-		const fetchTeams = async () => {
-			try {
-				const { data } = await authClient.organization.listUserTeams();
-
-				setTeams(data || []);
-			} catch (error) {
-				logger.error("Erreur lors du chargement des équipes:", error);
-
-				setTeams([]);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchTeams();
-	}, []);
+	const { executeAsync: deleteTeam, isPending: deleteTeamPending } =
+		useAction(deleteTeamAction, {
+			onSuccess: () => {
+				toast.success("L'équipe a été supprimée avec succès");
+			},
+			onError: ({ error }) => {
+				toast.error(error.serverError);
+			},
+		});
 
 	return (
 		<SidebarComp variant="inset" collapsible="icon">
@@ -101,53 +79,210 @@ export const MainSidebar = () => {
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu>
-							<SearchButton />
+							<SearchButton
+								teams={props.teams}
+								markers={props.markers}
+							/>
 							<SidebarMenuButton asChild>
-								<Link href="">
+								<Link href="/">
 									<Home />
 									Accueil
 								</Link>
 							</SidebarMenuButton>
-							<SidebarMenuButton asChild>
-								<Link href="">
-									<Settings />
-									Paramètres
-								</Link>
-							</SidebarMenuButton>
+							{authClient.organization.checkRolePermission({
+								role: "admin",
+								permission: {
+									organization: ["update"],
+									member: ["create", "update"],
+									invitation: ["create"],
+								},
+							}) ||
+							authClient.organization.checkRolePermission({
+								role: "owner",
+								permission: {
+									organization: ["update"],
+									member: ["create", "update"],
+									invitation: ["create"],
+								},
+							}) ? (
+								<Collapsible
+									asChild
+									className="group/collapsible"
+								>
+									<SidebarMenuItem>
+										<CollapsibleTrigger asChild>
+											<SidebarMenuButton
+												tooltip="Paramètres"
+												isActive={pathname.startsWith(
+													"/settings"
+												)}
+											>
+												<Settings />
+												Paramètres
+												<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+											</SidebarMenuButton>
+										</CollapsibleTrigger>
+										<CollapsibleContent>
+											<SidebarMenuSub>
+												<SidebarMenuSubItem>
+													<SidebarMenuSubButton
+														isActive={
+															pathname ===
+															"/settings"
+														}
+														asChild
+													>
+														<Link href="/settings">
+															General
+														</Link>
+													</SidebarMenuSubButton>
+												</SidebarMenuSubItem>
+												<SidebarMenuSubItem>
+													<SidebarMenuSubButton
+														isActive={
+															pathname ===
+															"/settings/teams"
+														}
+														asChild
+													>
+														<Link href="/settings/teams">
+															Equipes
+														</Link>
+													</SidebarMenuSubButton>
+												</SidebarMenuSubItem>
+												<SidebarMenuSubItem>
+													<SidebarMenuSubButton
+														isActive={
+															pathname ===
+															"/settings/members"
+														}
+														asChild
+													>
+														<Link href="/settings/members">
+															Membres
+														</Link>
+													</SidebarMenuSubButton>
+												</SidebarMenuSubItem>
+												{authClient.organization.checkRolePermission(
+													{
+														role: "owner",
+														permission: {
+															organization: [
+																"delete",
+															],
+														},
+													}
+												) ? (
+													<SidebarMenuSubItem>
+														<SidebarMenuSubButton
+															isActive={
+																pathname ===
+																"/setting/dangers"
+															}
+															asChild
+														>
+															<Link href="/settings/danger">
+																Danger Zone
+															</Link>
+														</SidebarMenuSubButton>
+													</SidebarMenuSubItem>
+												) : null}
+											</SidebarMenuSub>
+										</CollapsibleContent>
+									</SidebarMenuItem>
+								</Collapsible>
+							) : null}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
 
-				{!isLoading &&
-				((teams && teams.length > 0) || hasPermissionCreateTeam) ? (
+				{(props.teams && props.teams.length > 0) ||
+				hasPermissionCreateTeam ? (
 					<SidebarGroup>
-						<SidebarGroupLabel>Team</SidebarGroupLabel>
+						<SidebarGroupLabel>Equipes</SidebarGroupLabel>
 						{hasPermissionCreateTeam ? (
-							<SidebarGroupAction>
-								<Plus />
-							</SidebarGroupAction>
+							<CreateTeamSidebarAction />
 						) : null}
 						<SidebarGroupContent>
 							<SidebarMenu>
-								{teams.map((team) => (
-									<SidebarMenuItem key={team.id}>
-										<SidebarMenuButton
-											onClick={() => {
-												authClient.organization.setActiveTeam(
-													{ teamId: team.id }
-												);
+								{props.teams.map((team) => (
+									<ContextMenu key={team.id}>
+										<ContextMenuTrigger asChild>
+											<SidebarMenuItem>
+												<SidebarMenuButton
+													onClick={async () => {
+														await authClient.organization.setActiveTeam(
+															{
+																teamId:
+																	props.activeTeamId ===
+																	team.id
+																		? null
+																		: team.id,
+															}
+														);
 
-												router.refresh();
-											}}
-										>
-											{team.name}
-										</SidebarMenuButton>
-										{session?.activeTeamId === team.id ? (
-											<SidebarMenuAction>
-												<Check />
-											</SidebarMenuAction>
-										) : null}
-									</SidebarMenuItem>
+														if (
+															typeof window !==
+															"undefined"
+														) {
+															window.location.reload();
+														}
+													}}
+												>
+													<span className="truncate max-w-2/3">
+														{team.name}
+													</span>
+													{props.activeTeamId ===
+													team.id ? (
+														<SidebarMenuBadge>
+															<Check />
+														</SidebarMenuBadge>
+													) : null}
+												</SidebarMenuButton>
+											</SidebarMenuItem>
+										</ContextMenuTrigger>
+										<ContextMenuContent>
+											<ContextMenuItem asChild>
+												<Link
+													href={`/settings/teams/${team.id}`}
+												>
+													<Settings />
+													Settings
+												</Link>
+											</ContextMenuItem>
+											<ContextMenuSeparator />
+											<ContextMenuItem
+												variant="destructive"
+												onClick={() => {
+													dialog.add({
+														title: "Êtes-vous sûr ?",
+														description:
+															"Cette action est irréversible. L'équipe sera supprimée définitivement.",
+														action: {
+															label: "Supprimer",
+															variant:
+																"destructive",
+															onClick:
+																async () => {
+																	await deleteTeam(
+																		{
+																			teamId: team.id,
+																			organizationId:
+																				team.organizationId,
+																		}
+																	);
+																},
+														},
+														loading:
+															deleteTeamPending,
+													});
+												}}
+											>
+												<Trash />
+												Supprimer
+											</ContextMenuItem>
+										</ContextMenuContent>
+									</ContextMenu>
 								))}
 							</SidebarMenu>
 						</SidebarGroupContent>

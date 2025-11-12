@@ -12,6 +12,13 @@ import {
 import { useRouter } from "next/navigation";
 
 import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
+import {
 	Table,
 	TableBody,
 	TableCell,
@@ -22,6 +29,7 @@ import {
 import { TableFilter } from "@/features/data-table/table-filter";
 import { TablePagination } from "@/features/data-table/table-pagination";
 import { User } from "@prisma/client";
+import { User as UserIcon } from "lucide-react";
 
 interface DataTableProps<TData extends User, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -93,7 +101,20 @@ export function UsersTable<TData extends User, TValue>({
 								colSpan={columns.length}
 								className="h-24 text-center"
 							>
-								No results.
+								<Empty>
+									<EmptyHeader>
+										<EmptyMedia variant="icon">
+											<UserIcon />
+										</EmptyMedia>
+										<EmptyTitle>
+											Aucun Utilisateur
+										</EmptyTitle>
+										<EmptyDescription>
+											Vous n'avez aucun utilisateur pour
+											le moment.
+										</EmptyDescription>
+									</EmptyHeader>
+								</Empty>
 							</TableCell>
 						</TableRow>
 					)}

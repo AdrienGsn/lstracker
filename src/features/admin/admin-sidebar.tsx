@@ -58,7 +58,7 @@ const NAVIGATION: NavigationGroup[] = [
 				type: "LINK",
 				icon: MessageSquare,
 				label: "Feedback",
-				href: "/admin/feedback",
+				href: "/admin/feedbacks",
 			},
 			// {
 			// 	type: "COLLAPSIBLE",

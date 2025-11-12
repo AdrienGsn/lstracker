@@ -1,9 +1,28 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { authRoute } from "@/lib/safe-route";
-import { Marker } from "@prisma/client";
+import { orgRoute } from "@/lib/safe-route";
+import { headers } from "next/headers";
 
-export const GET = authRoute.handler(async (_req) => {
-	const markers = await prisma.marker.findMany();
+export const GET = orgRoute.handler(async (_req, { ctx }) => {
+	const data = await auth.api.getSession({
+		headers: await headers(),
+	});
 
-	return markers as Marker[];
+	const markers = await prisma.marker.findMany({
+		where: {
+			organizationId: ctx.organization.id,
+			teamId: null,
+		},
+	});
+
+	const teamMarkers = data?.session.activeTeamId
+		? await prisma.marker.findMany({
+				where: {
+					organizationId: ctx.organization.id,
+					teamId: data?.session.activeTeamId,
+				},
+		  })
+		: [];
+
+	return [...markers, ...teamMarkers];
 });

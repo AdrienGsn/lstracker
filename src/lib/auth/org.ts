@@ -62,7 +62,7 @@ export async function getActiveOrganization(userId: string) {
 	});
 
 	if (!anyMember) {
-		throw new Error("User has no organization");
+		return null;
 	}
 
 	return anyMember.organization;

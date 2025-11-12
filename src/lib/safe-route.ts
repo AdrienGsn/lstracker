@@ -1,10 +1,12 @@
-import { createZodRoute, MiddlewareFunction } from "next-zod-route";
+import { createZodRoute } from "next-zod-route";
 import { NextResponse } from "next/server";
 
 import { logger } from "@/lib/logger";
+import { prisma } from "@/lib/prisma";
 import z from "zod";
 import { currentUser } from "./auth/helper";
-import { roles } from "./auth/permissions";
+import { hasPermission } from "./auth/org";
+import { AuthPermissionSchema, RolesKeys } from "./auth/permissions";
 
 export class RouteError extends Error {
 	status?: number;
@@ -39,41 +41,45 @@ export const route = createZodRoute({
 });
 
 export const authRoute = route.use(async ({ next }) => {
-	const { user } = await currentUser();
+	const { user, session } = await currentUser();
 
 	if (!user) {
 		throw new RouteError("You must be logged in !", 401);
 	}
 
-	return next({ ctx: { user } });
+	return next({ ctx: { user, session } });
 });
 
-const rolesMetadataSchema = z.object({
-	roles: z.array(z.nativeEnum(roles)),
-});
+const rolesMetadataSchema = z
+	.object({
+		role: z.enum(RolesKeys).optional(),
+		permissions: AuthPermissionSchema.optional(),
+	})
+	.optional();
 
-const orgMiddleware: MiddlewareFunction = async ({ next, metadata }) => {
-	const org = await requiredCurrentOrg();
-
-	if (!org) {
-		return new RouteError("You must be part of an organization", 403);
-	}
-
-	if (metadata?.roles && metadata.roles.length > 0) {
-		const userHasRole = metadata.roles.some(
-			(role) => org.userRole === role // Adapter selon ta structure
-		);
-
-		if (!userHasRole) {
-			return new RouteError("You do not have the required role", 403);
-		}
-	}
-
-	return next({ context: { org } });
-};
-
-export const orgRoute = createZodRoute({
-	handleServerError,
-})
+export const orgRoute = authRoute
 	.defineMetadata(rolesMetadataSchema)
-	.use(orgMiddleware);
+	.use(async ({ next, metadata, ctx, request }) => {
+		const organization = await prisma.organization.findFirst({
+			where: { id: ctx.session?.activeOrganizationId! },
+		});
+
+		if (!organization) {
+			throw new RouteError("You must be part of an organization", 403);
+		}
+
+		const permissions = (metadata as { permissions?: unknown })
+			?.permissions;
+
+		if (permissions) {
+			const hasAccess = await hasPermission(permissions);
+
+			if (!hasAccess) {
+				throw new RouteError(
+					"You don't have the required permissions."
+				);
+			}
+		}
+
+		return next({ ctx: { organization } });
+	});
