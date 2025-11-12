@@ -1,5 +1,7 @@
 "use server";
 
+import { headers } from "next/headers";
+
 import { auth } from "@/lib/auth";
 import { authAction } from "@/lib/safe-action";
 import { JoinOrganizationSchema } from "./schema";
@@ -11,5 +13,6 @@ export const joinOrganizationAction = authAction
 			body: {
 				invitationId,
 			},
+			headers: await headers(),
 		});
 	});

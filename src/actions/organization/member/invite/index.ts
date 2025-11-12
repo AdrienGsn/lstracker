@@ -31,7 +31,7 @@ export const inviteMemberAction = orgAction
 			});
 
 			if (!team) {
-				throw new Error(
+				throw new ActionError(
 					"L'équipe spécifiée n'existe pas ou n'appartient pas à cette organisation"
 				);
 			}
@@ -39,10 +39,21 @@ export const inviteMemberAction = orgAction
 			validTeamId = teamId;
 		}
 
+		const discordAccount = await prisma.account.findFirst({
+			where: { providerId: "discord", accountId: discordId },
+			select: { user: { select: { email: true } } },
+		});
+
+		if (!discordAccount) {
+			throw new ActionError(
+				"Impossible d'inviter cet utilisateur Discord : son compte n'est pas lié à un email sur notre plateforme."
+			);
+		}
+
 		const invitation = await prisma.invitation.create({
 			data: {
 				organizationId: organization.id,
-				email: discordId,
+				email: discordAccount.user.email,
 				role: role,
 				status: "pending",
 				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 jours d'expiration
@@ -52,8 +63,6 @@ export const inviteMemberAction = orgAction
 		});
 
 		const inviteLink = `${getServerUrl()}/join/${invitation.id}`;
-
-		const message = `You've been invited to join "${organization.name}" on ${siteConfig.title} by ${ctx.user.name}.\nAccept your invitation: ${inviteLink}`;
 
 		try {
 			await sendDiscordDMAction({
