@@ -1,5 +1,9 @@
 "use client";
 
+import { HelpCircle } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+
 import { bugReportAction } from "@/actions/bug-report";
 import {
 	BugReportSchema,
@@ -11,6 +15,7 @@ import {
 	Dialog,
 	DialogClose,
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -28,10 +33,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useReportModal } from "@/store/use-report-modal";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { HelpCircle } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
 
 export const BugReport = () => {
 	const open = useReportModal((state) => state.open);

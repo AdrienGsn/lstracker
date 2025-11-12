@@ -1,7 +1,8 @@
+import { headers } from "next/headers";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { orgRoute } from "@/lib/safe-route";
-import { headers } from "next/headers";
 
 export const GET = orgRoute.handler(async (_req, { ctx }) => {
 	const data = await auth.api.getSession({

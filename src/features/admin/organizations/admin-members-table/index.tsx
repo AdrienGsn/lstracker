@@ -7,6 +7,7 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -26,7 +27,6 @@ import {
 } from "@/components/ui/table";
 import { TablePagination } from "@/features/data-table/table-pagination";
 import { MemberWithUser } from "@/types/organization";
-import { User } from "lucide-react";
 
 interface DataTableProps<TData extends MemberWithUser, TValue> {
 	columns: ColumnDef<TData, TValue>[];

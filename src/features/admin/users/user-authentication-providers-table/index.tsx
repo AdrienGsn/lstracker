@@ -6,6 +6,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { Link } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -24,7 +25,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { SocialProvider } from "@/types/auth";
-import { Link } from "lucide-react";
 
 interface DataTableProps<TData extends SocialProvider, TValue> {
 	columns: ColumnDef<TData, TValue>[];

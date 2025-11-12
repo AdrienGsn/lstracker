@@ -9,6 +9,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { Pin } from "lucide-react";
 
 import {
 	Empty,
@@ -27,7 +28,6 @@ import {
 } from "@/components/ui/table";
 import { TablePagination } from "@/features/data-table/table-pagination";
 import { MarkerWithRelations } from "@/types/marker";
-import { Pin } from "lucide-react";
 
 interface DataTableProps<TData extends MarkerWithRelations, TValue> {
 	columns: ColumnDef<TData, TValue>[];

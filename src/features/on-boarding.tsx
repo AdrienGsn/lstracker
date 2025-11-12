@@ -1,6 +1,10 @@
 "use client";
 
 import imageCompression from "browser-image-compression";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 import { createOrgAction } from "@/actions/organization/create";
 import {
@@ -35,10 +39,6 @@ import {
 	StepperTrigger,
 } from "@/components/ui/stepper";
 import { Typography } from "@/components/ui/typography";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { toast } from "sonner";
 import { DiscordServerSelector } from "./discord-server-selector";
 import { ImageUploader } from "./image-uploader";
 

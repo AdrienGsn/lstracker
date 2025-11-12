@@ -3,6 +3,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { CalendarIcon, Ellipsis, Eye, Trash } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import Link from "next/link";
+import { toast } from "sonner";
 
 import { deleteOrgMemberAction } from "@/actions/organization/member/delete";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,9 +22,6 @@ import { Typography } from "@/components/ui/typography";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { dialog } from "@/providers/dialog-provider";
 import { MemberWithUser } from "@/types/organization";
-import { useAction } from "next-safe-action/hooks";
-import Link from "next/link";
-import { toast } from "sonner";
 
 export const membersTable: ColumnDef<MemberWithUser>[] = [
 	{

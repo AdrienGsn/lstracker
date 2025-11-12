@@ -1,6 +1,8 @@
 import { Session } from "@prisma/client";
 import dayjs from "dayjs";
+import { ArrowLeft } from "lucide-react";
 import { headers } from "next/headers";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
@@ -31,8 +33,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SocialProvider } from "@/types/auth";
 import type { PageParams } from "@/types/next";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;

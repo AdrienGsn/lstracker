@@ -9,6 +9,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -29,7 +30,6 @@ import {
 import { TableFilter } from "@/features/data-table/table-filter";
 import { TablePagination } from "@/features/data-table/table-pagination";
 import { FeedbackWithUser } from "@/types/feedback";
-import { MessageSquare } from "lucide-react";
 
 interface DataTableProps<TData extends FeedbackWithUser, TValue> {
 	columns: ColumnDef<TData, TValue>[];

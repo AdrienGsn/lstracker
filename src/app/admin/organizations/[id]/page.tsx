@@ -1,3 +1,5 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
@@ -14,8 +16,6 @@ import { MembersCard } from "@/features/admin/organizations/members-card";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 import { MemberWithUser } from "@/types/organization";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;

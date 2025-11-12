@@ -1,5 +1,9 @@
 "use client";
 
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 import { deleteAccountAction } from "@/actions/account/delete";
 import { LoadingButton } from "@/components/loading-button";
 import {
@@ -10,9 +14,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { dialog } from "@/providers/dialog-provider";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export const DeleteAccountCard = () => {
 	const router = useRouter();

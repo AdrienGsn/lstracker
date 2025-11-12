@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { FieldValues } from "react-hook-form";
+
 import {
 	FormControl,
 	FormField,
@@ -13,8 +18,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import { FieldValues } from "react-hook-form";
 
 interface DiscordChannel {
 	id: string;

@@ -2,6 +2,7 @@
 
 import { Check, Moon, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 import {
 	DropdownMenuItem,
@@ -10,7 +11,6 @@ import {
 	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 
 const THEMES: { label: string; value: string }[] = [
 	{

@@ -1,9 +1,10 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import { orgAction } from "@/lib/safe-action";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+
+import { auth } from "@/lib/auth";
+import { orgAction } from "@/lib/safe-action";
 import { CreateTeamSchema } from "./schema";
 
 export const createTeamAction = orgAction

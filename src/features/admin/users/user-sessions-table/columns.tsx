@@ -4,15 +4,15 @@ import { Session } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Monitor, Smartphone, Trash } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { deleteUserSessionAction } from "@/actions/admin/user/session/delete";
 import { LoadingButton } from "@/components/loading-button";
 import { Badge } from "@/components/ui/badge";
 import { Typography } from "@/components/ui/typography";
 import { dialog } from "@/providers/dialog-provider";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export const userSessionsTable: ColumnDef<Session>[] = [
 	{

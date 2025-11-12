@@ -3,6 +3,7 @@
 import { HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 import {
 	BreadcrumbEllipsis,
@@ -20,7 +21,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
 
 const ITEMS_TO_DISPLAY = 3;
 

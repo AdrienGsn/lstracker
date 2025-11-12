@@ -1,8 +1,11 @@
 "use client";
 
+import { Marker, Team } from "@prisma/client";
 import { Check, ChevronRight, Home, Settings, Trash } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { deleteTeamAction } from "@/actions/organization/team/delete";
 import {
@@ -35,9 +38,6 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth/client";
 import { dialog } from "@/providers/dialog-provider";
-import { Marker, Team } from "@prisma/client";
-import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
 import { CreateTeamSidebarAction } from "./create-team-sidebar-action";
 import { OrgDropdown } from "./org-dropdown";
 import { SearchButton } from "./search-button";

@@ -1,6 +1,7 @@
+import { NextResponse } from "next/server";
+
 import { prisma } from "@/lib/prisma";
 import { authRoute } from "@/lib/safe-route";
-import { NextResponse } from "next/server";
 
 export const GET = authRoute.handler(async (_req, { ctx }) => {
 	try {

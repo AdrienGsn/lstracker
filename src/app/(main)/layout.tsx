@@ -1,3 +1,7 @@
+import { Team } from "@prisma/client";
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { MainHeader } from "@/features/main/main-header";
 import { MainSidebar } from "@/features/main/main-sidebar";
@@ -5,9 +9,6 @@ import { auth } from "@/lib/auth";
 import { requiredCurrentUserCache } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 import type { LayoutParams } from "@/types/next";
-import { Team } from "@prisma/client";
-import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 export default async function RoutePage(props: LayoutParams) {
 	const { user, session } = await requiredCurrentUserCache();

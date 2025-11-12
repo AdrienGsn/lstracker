@@ -1,8 +1,9 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { prisma } from "@/lib/prisma";
 import { orgAction } from "@/lib/safe-action";
-import { revalidatePath } from "next/cache";
 import { UpdateOrgMemberSchema } from "./schema";
 
 export const updateOrgMemberAction = orgAction

@@ -1,7 +1,8 @@
+import { NextResponse } from "next/server";
+
 import { ENV } from "@/lib/env";
 import { orgRoute } from "@/lib/safe-route";
 import { parseMetadata } from "@/utils/metadata";
-import { NextResponse } from "next/server";
 
 export const GET = orgRoute
 	.metadata({ permissions: { team: ["update"] } })

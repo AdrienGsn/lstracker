@@ -1,13 +1,14 @@
 "use client";
 
+import { Table } from "@tanstack/react-table";
+import { CircleX, Search } from "lucide-react";
+import { useRef } from "react";
+
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { Table } from "@tanstack/react-table";
-import { CircleX, Search } from "lucide-react";
-import { useRef } from "react";
 
 type TableFilterProps<TData> = {
 	table: Table<TData>;
