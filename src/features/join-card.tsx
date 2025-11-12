@@ -3,7 +3,7 @@
 import { Invitation, Organization, User } from "@prisma/client";
 import dayjs from "dayjs";
 import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { joinOrganizationAction } from "@/actions/organization/join";
