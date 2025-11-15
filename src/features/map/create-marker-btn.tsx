@@ -38,6 +38,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { dialog } from "@/providers/dialog-provider";
+import { BlipSelector } from "./blip-selector";
 
 const CreateForm = (props: { teams: Team[] }) => {
 	const form = useZodForm({
@@ -54,6 +55,10 @@ const CreateForm = (props: { teams: Team[] }) => {
 	const { executeAsync, isPending } = useAction(createMarkerAction, {
 		onSuccess: ({ data }) => {
 			toast.success("Le marqueur a été créé avec succès !");
+
+			if (typeof window !== "undefined") {
+				window.location.reload();
+			}
 		},
 		onError: ({ error }) => {
 			toast.error(error.serverError);
@@ -78,6 +83,7 @@ const CreateForm = (props: { teams: Team[] }) => {
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="space-y-6"
 				>
+					<BlipSelector form={form} fieldName="icon" />
 					<FormField
 						control={form.control}
 						name="label"

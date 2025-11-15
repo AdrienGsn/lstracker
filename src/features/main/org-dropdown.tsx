@@ -48,11 +48,11 @@ export const OrgDropdown = () => {
 		switchOrgAction,
 		{
 			onSuccess: ({ data }) => {
+				toast.success(`Basculement vers ${data?.name} réussi`);
+
 				if (typeof window !== "undefined") {
 					window.location.reload();
 				}
-
-				toast.success(`Basculement vers ${data?.name} réussi`);
 			},
 			onError: ({ error }) => {
 				toast.error(error.serverError);
