@@ -8,9 +8,9 @@ import {
 	LayoutHeader,
 	LayoutTitle,
 } from "@/components/page/layout";
-import { InviteMemberBtn } from "@/features/settings/invite-member-btn";
-import { MembersTable } from "@/features/settings/members-table";
-import { membersTable } from "@/features/settings/members-table/columns";
+import { InviteMemberBtn } from "@/features/settings/members/invite-member-btn";
+import { MembersTable } from "@/features/settings/members/members-table";
+import { membersTable } from "@/features/settings/members/members-table/columns";
 import { auth } from "@/lib/auth";
 import { requiredCurrentUserCache } from "@/lib/cache";
 import type { PageParams } from "@/types/next";

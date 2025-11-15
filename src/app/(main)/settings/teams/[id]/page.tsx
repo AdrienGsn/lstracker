@@ -5,6 +5,7 @@ import { Layout } from "@/components/page/layout";
 import { TeamPage } from "@/features/settings/teams/team-page";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
+import { TeamWithRelations } from "@/types/organization";
 
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;
@@ -25,7 +26,7 @@ export default async function RoutePage(props: PageParams<{ id: string }>) {
 	return (
 		<Layout>
 			<Suspense fallback={"Loading..."}>
-				<TeamPage team={team} />
+				<TeamPage team={team as TeamWithRelations} />
 			</Suspense>
 		</Layout>
 	);
