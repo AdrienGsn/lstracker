@@ -47,14 +47,9 @@ export const teamMarkersTable: ColumnDef<MarkerWithUser>[] = [
 							</AvatarFallback>
 						)}
 					</Avatar>
-					<div className="flex flex-col items-start">
-						<Typography className="font-bold">
-							{row.original.user.name}
-						</Typography>
-						<Typography variant="muted">
-							{row.original.user.email}
-						</Typography>
-					</div>
+					<Typography className="font-bold">
+						{row.original.user.name}
+					</Typography>
 				</div>
 			);
 		},

@@ -7,8 +7,9 @@ import { useAction } from "next-safe-action/hooks";
 import Link from "next/link";
 import { toast } from "sonner";
 
-import { deleteTeamMemberAction } from "@/actions/organization/team/member/delete";
+import { deleteOrgMemberAction } from "@/actions/organization/member/delete";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -20,9 +21,9 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { dialog } from "@/providers/dialog-provider";
-import { TeamMemberWithUser } from "@/types/organization";
+import { MemberWithUser } from "@/types/organization";
 
-export const teamMembersTable: ColumnDef<TeamMemberWithUser>[] = [
+export const membersTable: ColumnDef<MemberWithUser>[] = [
 	{
 		accessorKey: "user",
 		header: "User",
@@ -40,16 +41,18 @@ export const teamMembersTable: ColumnDef<TeamMemberWithUser>[] = [
 							</AvatarFallback>
 						)}
 					</Avatar>
-					<div className="flex flex-col items-start">
-						<Typography className="font-bold">
-							{row.original.user.name}
-						</Typography>
-						<Typography variant="muted">
-							{row.original.user.email}
-						</Typography>
-					</div>
+					<Typography className="font-bold">
+						{row.original.user.name}
+					</Typography>
 				</div>
 			);
+		},
+	},
+	{
+		accessorKey: "role",
+		header: "Role",
+		cell: ({ row }) => {
+			return <Badge variant="secondary">{row.original.role}</Badge>;
 		},
 	},
 	{
@@ -84,7 +87,7 @@ export const teamMembersTable: ColumnDef<TeamMemberWithUser>[] = [
 			const { user } = useCurrentUser();
 
 			const { executeAsync, isPending } = useAction(
-				deleteTeamMemberAction,
+				deleteOrgMemberAction,
 				{
 					onSuccess: () => {
 						toast.success("Le membre a bien été supprimé.");
@@ -113,7 +116,10 @@ export const teamMembersTable: ColumnDef<TeamMemberWithUser>[] = [
 						<DropdownMenuItem
 							className="cursor-pointer"
 							variant="destructive"
-							disabled={row.original.user.id === user?.id}
+							disabled={
+								row.original.user.id === user?.id ||
+								row.original.role === "owner"
+							}
 							onClick={() => {
 								dialog.add({
 									title: "Êtes vous sur ?",
@@ -124,7 +130,6 @@ export const teamMembersTable: ColumnDef<TeamMemberWithUser>[] = [
 										variant: "destructive",
 										onClick: async () => {
 											await executeAsync({
-												teamId: row.original.teamId,
 												memberId: row.original.id,
 											});
 										},

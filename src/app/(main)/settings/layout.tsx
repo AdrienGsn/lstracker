@@ -11,16 +11,14 @@ export default async function RoutePage(props: LayoutParams) {
 	const hasPermission = await auth.api.hasPermission({
 		body: {
 			organizationId: session?.activeOrganizationId!,
-			permission: {
-				organization: ["update"],
-				member: ["create", "update"],
+			permissions: {
 				invitation: ["create"],
 			},
 		},
 		headers: await headers(),
 	});
 
-	if (!hasPermission) {
+	if (!hasPermission.success) {
 		return notFound();
 	}
 

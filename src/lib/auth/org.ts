@@ -1,19 +1,6 @@
-import { headers } from "next/headers";
+"use server";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from ".";
-import { AuthPermission } from "./permissions";
-
-export const hasPermission = async (permission: AuthPermission) => {
-	const result = await auth.api.hasPermission({
-		headers: await headers(),
-		body: {
-			permission,
-		},
-	});
-
-	return result.success;
-};
 
 export async function getActiveOrganization(userId: string) {
 	const existingSession = await prisma.session.findFirst({

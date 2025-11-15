@@ -16,9 +16,12 @@ export type MemberWithTeam = Member & {
 	team: Team;
 };
 
-export type TeamWithMembersAndMarkers = Team & {
+export type TeamWithRelations = Team & {
 	members: TeamMemberWithUser[];
 	markers: MarkerWithUser[];
+	organization: Organization & {
+		members: MemberWithUser[];
+	};
 };
 
 export type TeamMetadata = {

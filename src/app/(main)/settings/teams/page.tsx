@@ -6,13 +6,13 @@ import {
 	LayoutHeader,
 	LayoutTitle,
 } from "@/components/page/layout";
-import { CreateTeamBtn } from "@/features/settings/create-team-btn";
-import { TeamsTable } from "@/features/settings/teams-table";
-import { teamsTable } from "@/features/settings/teams-table/columns";
+import { CreateTeamBtn } from "@/features/settings/teams/create-team-btn";
+import { TeamsTable } from "@/features/settings/teams/teams-table";
+import { teamsTable } from "@/features/settings/teams/teams-table/columns";
 import { requiredCurrentUserCache } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
-import { TeamWithMembersAndMarkers } from "@/types/organization";
+import { TeamWithRelations } from "@/types/organization";
 
 export default async function RoutePage(props: PageParams) {
 	const { session } = await requiredCurrentUserCache();
@@ -36,7 +36,7 @@ export default async function RoutePage(props: PageParams) {
 			<LayoutContent>
 				<TeamsTable
 					columns={teamsTable}
-					data={teams as TeamWithMembersAndMarkers[]}
+					data={teams as TeamWithRelations[]}
 				/>
 			</LayoutContent>
 		</Layout>

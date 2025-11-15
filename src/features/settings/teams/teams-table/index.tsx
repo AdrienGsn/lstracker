@@ -27,14 +27,14 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { TablePagination } from "@/features/data-table/table-pagination";
-import { TeamWithMembersAndMarkers } from "@/types/organization";
+import { TeamWithRelations } from "@/types/organization";
 
-interface DataTableProps<TData extends TeamWithMembersAndMarkers, TValue> {
+interface DataTableProps<TData extends TeamWithRelations, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 }
 
-export function TeamsTable<TData extends TeamWithMembersAndMarkers, TValue>({
+export function TeamsTable<TData extends TeamWithRelations, TValue>({
 	columns,
 	data,
 }: DataTableProps<TData, TValue>) {

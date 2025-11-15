@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Typography } from "@/components/ui/typography";
 import { dialog } from "@/providers/dialog-provider";
-import { TeamWithMembersAndMarkers } from "@/types/organization";
+import { TeamWithRelations } from "@/types/organization";
 
-export const teamsTable: ColumnDef<TeamWithMembersAndMarkers>[] = [
+export const teamsTable: ColumnDef<TeamWithRelations>[] = [
 	{
 		accessorKey: "name",
 		header: "Nom",

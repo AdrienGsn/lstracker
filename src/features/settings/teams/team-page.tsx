@@ -22,6 +22,7 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import {
 	Card,
+	CardAction,
 	CardContent,
 	CardDescription,
 	CardHeader,
@@ -30,17 +31,18 @@ import {
 import { useZodForm } from "@/components/ui/form";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { dialog } from "@/providers/dialog-provider";
-import { TeamWithMembersAndMarkers } from "@/types/organization";
+import { TeamWithRelations } from "@/types/organization";
 import { parseMetadata } from "@/utils/metadata";
-import { FormUnsavedBar } from "../form/form-unsaved-bar";
-import { DiscordChannelSelector } from "./discord-channel-selector";
+import { FormUnsavedBar } from "../../form/form-unsaved-bar";
+import { DiscordChannelSelector } from "../discord-channel-selector";
+import { AddTeamMember } from "./add-team-member";
 import { TeamMarkersTable } from "./team-markers-table";
 import { teamMarkersTable } from "./team-markers-table/columns";
 import { TeamMembersTable } from "./team-members-table";
 import { teamMembersTable } from "./team-members-table/columns";
 
 export type TeamPageProps = {
-	team: TeamWithMembersAndMarkers;
+	team: TeamWithRelations;
 };
 
 export const TeamPage = (props: TeamPageProps) => {
@@ -144,11 +146,13 @@ export const TeamPage = (props: TeamPageProps) => {
 				</Card>
 				<Card>
 					<CardHeader>
-						<CardTitle>Equipes</CardTitle>
+						<CardTitle>Membres</CardTitle>
 						<CardDescription>
-							Retrouvez ci-dessous la liste des équipes auxquelles
-							ce membre appartient.
+							Voici la liste des membres de cette équipe.
 						</CardDescription>
+						<CardAction>
+							<AddTeamMember team={props.team} />
+						</CardAction>
 					</CardHeader>
 					<CardContent>
 						<TeamMembersTable

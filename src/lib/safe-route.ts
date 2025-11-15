@@ -4,8 +4,9 @@ import z from "zod";
 
 import { logger } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
+import { auth } from "./auth";
 import { currentUser } from "./auth/helper";
-import { hasPermission } from "./auth/org";
 import { AuthPermissionSchema, RolesKeys } from "./auth/permissions";
 
 export class RouteError extends Error {
@@ -72,9 +73,14 @@ export const orgRoute = authRoute
 			?.permissions;
 
 		if (permissions) {
-			const hasAccess = await hasPermission(permissions);
+			const hasAccess = await auth.api.hasPermission({
+				headers: await headers(),
+				body: {
+					permissions,
+				},
+			});
 
-			if (!hasAccess) {
+			if (!hasAccess.success) {
 				throw new RouteError(
 					"You don't have the required permissions."
 				);
