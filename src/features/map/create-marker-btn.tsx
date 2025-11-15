@@ -182,7 +182,7 @@ export const CreateMarkerBtn = (props: CreateMarkerBtnProps) => {
 			}}
 		>
 			<Plus />
-			Creer
+			Nouveau marqueur
 		</Button>
 	);
 };
