@@ -48,7 +48,7 @@ const CreateForm = () => {
 		isError: errorMembers,
 		refetch: refetchMembers,
 	} = useQuery({
-		queryKey: ["discord-members"],
+		queryKey: ["members"],
 		queryFn: async () => {
 			const res = await fetch("/api/discord/members");
 

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { Layout } from "@/components/page/layout";
-import { TeamPage } from "@/features/settings/team-page";
+import { TeamPage } from "@/features/settings/teams/team-page";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 
@@ -14,6 +14,7 @@ export default async function RoutePage(props: PageParams<{ id: string }>) {
 		include: {
 			members: { include: { user: true } },
 			markers: { include: { user: true } },
+			organization: { include: { members: { include: { user: true } } } },
 		},
 	});
 

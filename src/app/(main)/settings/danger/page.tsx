@@ -27,7 +27,7 @@ export default async function RoutePage(props: PageParams) {
 		headers: await headers(),
 	});
 
-	if (!hasPermission) {
+	if (!hasPermission.success) {
 		return notFound();
 	}
 

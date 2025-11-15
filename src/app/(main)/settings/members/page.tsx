@@ -12,7 +12,6 @@ import { InviteMemberBtn } from "@/features/settings/invite-member-btn";
 import { MembersTable } from "@/features/settings/members-table";
 import { membersTable } from "@/features/settings/members-table/columns";
 import { auth } from "@/lib/auth";
-import { hasPermission } from "@/lib/auth/org";
 import { requiredCurrentUserCache } from "@/lib/cache";
 import type { PageParams } from "@/types/next";
 import { MemberWithUser } from "@/types/organization";
@@ -24,8 +23,11 @@ export default async function RoutePage(props: PageParams) {
 		headers: await headers(),
 	});
 
-	const hasPermissionToInvite = await hasPermission({
-		invitation: ["create"],
+	const hasPermissionToInvite = await auth.api.hasPermission({
+		headers: await headers(),
+		body: {
+			permission: { invitation: ["create"] },
+		},
 	});
 
 	return (
@@ -36,7 +38,7 @@ export default async function RoutePage(props: PageParams) {
 					Gérez les membres de votre organisation ici.
 				</LayoutDescription>
 			</LayoutHeader>
-			{hasPermissionToInvite ? (
+			{hasPermissionToInvite.success ? (
 				<LayoutActions>
 					<InviteMemberBtn />
 				</LayoutActions>

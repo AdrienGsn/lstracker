@@ -5,7 +5,6 @@ import z from "zod";
 import { currentUser } from "@/lib/auth/helper";
 import { logger } from "@/lib/logger";
 import { auth } from "./auth";
-import { hasPermission } from "./auth/org";
 import { AuthPermissionSchema, RolesKeys } from "./auth/permissions";
 
 export class ActionError extends Error {
@@ -69,9 +68,14 @@ export const orgAction = createSafeActionClient({
 		}
 
 		if (metadata.permissions) {
-			const hasAccess = await hasPermission(metadata.permissions);
+			const hasAccess = await auth.api.hasPermission({
+				headers: await headers(),
+				body: {
+					permission: metadata.permissions,
+				},
+			});
 
-			if (!hasAccess) {
+			if (!hasAccess.success) {
 				throw new ActionError(
 					"You don't have the required permissions."
 				);

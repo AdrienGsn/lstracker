@@ -48,17 +48,12 @@ export type MainSidebarProps = {
 	markers: Marker[];
 };
 
-export const MainSidebar = (props: MainSidebarProps) => {
+export function MainSidebar(props: MainSidebarProps) {
 	const { state } = useSidebar();
 	const pathname = usePathname();
 	const router = useRouter();
 
-	const hasPermissionCreateTeam = authClient.organization.checkRolePermission(
-		{
-			permission: { team: ["create"] },
-			role: "admin",
-		}
-	);
+	const { data: member } = authClient.useActiveMember();
 
 	const { executeAsync: deleteTeam, isPending: deleteTeamPending } =
 		useAction(deleteTeamAction, {
@@ -89,22 +84,8 @@ export const MainSidebar = (props: MainSidebarProps) => {
 									Accueil
 								</Link>
 							</SidebarMenuButton>
-							{authClient.organization.checkRolePermission({
-								role: "admin",
-								permission: {
-									organization: ["update"],
-									member: ["create", "update"],
-									invitation: ["create"],
-								},
-							}) ||
-							authClient.organization.checkRolePermission({
-								role: "owner",
-								permission: {
-									organization: ["update"],
-									member: ["create", "update"],
-									invitation: ["create"],
-								},
-							}) ? (
+							{member?.role === "admin" ||
+							member?.role === "owner" ? (
 								<Collapsible
 									asChild
 									className="group/collapsible"
@@ -163,16 +144,7 @@ export const MainSidebar = (props: MainSidebarProps) => {
 														</Link>
 													</SidebarMenuSubButton>
 												</SidebarMenuSubItem>
-												{authClient.organization.checkRolePermission(
-													{
-														role: "owner",
-														permission: {
-															organization: [
-																"delete",
-															],
-														},
-													}
-												) ? (
+												{member?.role === "owner" ? (
 													<SidebarMenuSubItem>
 														<SidebarMenuSubButton
 															isActive={
@@ -196,11 +168,11 @@ export const MainSidebar = (props: MainSidebarProps) => {
 					</SidebarGroupContent>
 				</SidebarGroup>
 
-				{(props.teams && props.teams.length > 0) ||
-				hasPermissionCreateTeam ? (
+				{props.teams && props.teams.length > 0 ? (
 					<SidebarGroup>
 						<SidebarGroupLabel>Equipes</SidebarGroupLabel>
-						{hasPermissionCreateTeam ? (
+						{member?.role === "admin" ||
+						member?.role === "owner" ? (
 							<CreateTeamSidebarAction />
 						) : null}
 						<SidebarGroupContent>
@@ -291,4 +263,4 @@ export const MainSidebar = (props: MainSidebarProps) => {
 			</SidebarContent>
 		</SidebarComp>
 	);
-};
+}

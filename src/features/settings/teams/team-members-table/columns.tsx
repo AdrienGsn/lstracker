@@ -7,9 +7,8 @@ import { useAction } from "next-safe-action/hooks";
 import Link from "next/link";
 import { toast } from "sonner";
 
-import { deleteOrgMemberAction } from "@/actions/organization/member/delete";
+import { deleteTeamMemberAction } from "@/actions/organization/team/member/delete";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -21,9 +20,9 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { dialog } from "@/providers/dialog-provider";
-import { MemberWithUser } from "@/types/organization";
+import { TeamMemberWithUser } from "@/types/organization";
 
-export const membersTable: ColumnDef<MemberWithUser>[] = [
+export const teamMembersTable: ColumnDef<TeamMemberWithUser>[] = [
 	{
 		accessorKey: "user",
 		header: "User",
@@ -41,23 +40,11 @@ export const membersTable: ColumnDef<MemberWithUser>[] = [
 							</AvatarFallback>
 						)}
 					</Avatar>
-					<div className="flex flex-col items-start">
-						<Typography className="font-bold">
-							{row.original.user.name}
-						</Typography>
-						<Typography variant="muted">
-							{row.original.user.email}
-						</Typography>
-					</div>
+					<Typography className="font-bold">
+						{row.original.user.name}
+					</Typography>
 				</div>
 			);
-		},
-	},
-	{
-		accessorKey: "role",
-		header: "Role",
-		cell: ({ row }) => {
-			return <Badge variant="secondary">{row.original.role}</Badge>;
 		},
 	},
 	{
@@ -92,7 +79,7 @@ export const membersTable: ColumnDef<MemberWithUser>[] = [
 			const { user } = useCurrentUser();
 
 			const { executeAsync, isPending } = useAction(
-				deleteOrgMemberAction,
+				deleteTeamMemberAction,
 				{
 					onSuccess: () => {
 						toast.success("Le membre a bien été supprimé.");
@@ -132,7 +119,8 @@ export const membersTable: ColumnDef<MemberWithUser>[] = [
 										variant: "destructive",
 										onClick: async () => {
 											await executeAsync({
-												memberId: row.original.id,
+												teamId: row.original.teamId,
+												userId: row.original.user.id,
 											});
 										},
 									},

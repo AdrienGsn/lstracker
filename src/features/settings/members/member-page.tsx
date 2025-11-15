@@ -30,12 +30,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { FormField, useZodForm } from "@/components/ui/form";
-import {
-	Item,
-	ItemActions,
-	ItemContent,
-	ItemMedia,
-} from "@/components/ui/item";
+import { Item, ItemContent, ItemMedia } from "@/components/ui/item";
 import {
 	Select,
 	SelectContent,
@@ -141,37 +136,36 @@ export const MemberPage = (props: MemberPageProps) => {
 			</LayoutHeader>
 			<LayoutActions>
 				{props.member.role !== "owner" ? (
-					<ItemActions>
-						<FormField
-							control={form.control}
-							name="role"
-							render={({ field }) => (
-								<Select
-									onValueChange={field.onChange}
-									value={field.value}
-									defaultValue={field.value}
-								>
-									<SelectTrigger className="w-[120px]">
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="member">
-											Membre
-										</SelectItem>
-										<SelectItem value="admin">
-											Admin
-										</SelectItem>
-									</SelectContent>
-								</Select>
-							)}
-						/>
-					</ItemActions>
+					<FormField
+						control={form.control}
+						name="role"
+						render={({ field }) => (
+							<Select
+								onValueChange={field.onChange}
+								value={field.value}
+								defaultValue={field.value}
+							>
+								<SelectTrigger className="w-[120px]">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="member">
+										Membre
+									</SelectItem>
+									<SelectItem value="admin">Admin</SelectItem>
+								</SelectContent>
+							</Select>
+						)}
+					/>
 				) : null}
 				<LoadingButton
 					variant="destructive"
 					type="button"
 					loading={deleteOrgMemberPending}
-					disabled={props.member.user.id === user?.id}
+					disabled={
+						props.member.user.id === user?.id ||
+						props.member.role === "owner"
+					}
 					onClick={() => {
 						dialog.add({
 							title: "Êtes-vous sûr ?",
