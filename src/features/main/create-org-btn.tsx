@@ -44,11 +44,12 @@ const CreateForm = () => {
 
 	const { executeAsync, isPending } = useAction(createOrgAction, {
 		onSuccess: ({ data }) => {
+			toast.success(`Organisation "${data?.name}" créée avec succès !`);
+			
 			if (typeof window !== "undefined") {
 				window.location.reload();
 			}
 
-			toast.success(`Organisation "${data?.name}" créée avec succès !`);
 		},
 		onError: ({ error }) => {
 			toast.error(error.serverError);
