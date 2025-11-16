@@ -111,8 +111,8 @@ export const GTAMap = () => {
 				"./images/mapStyles/styleSatelite/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
-					maxZoom: 8,
-					maxNativeZoom: 8,
+					maxZoom: 5,
+					maxNativeZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
 					id: "SateliteStyle map",
@@ -122,6 +122,7 @@ export const GTAMap = () => {
 					updateInterval: 200,
 					opacity: 1,
 					className: "tile-loaded",
+					errorTileUrl: "",
 				}
 			);
 
@@ -129,7 +130,7 @@ export const GTAMap = () => {
 				"./images/mapStyles/styleAtlas/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
-					maxZoom: 8,
+					maxZoom: 5,
 					maxNativeZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
@@ -140,6 +141,7 @@ export const GTAMap = () => {
 					updateInterval: 200,
 					opacity: 1,
 					className: "tile-loaded",
+					errorTileUrl: "",
 				}
 			);
 
@@ -147,7 +149,7 @@ export const GTAMap = () => {
 				"./images/mapStyles/styleGrid/{z}/{x}/{y}.webp",
 				{
 					minZoom: 0,
-					maxZoom: 8,
+					maxZoom: 5,
 					maxNativeZoom: 5,
 					noWrap: true,
 					attribution: "Online map GTA V",
@@ -158,6 +160,7 @@ export const GTAMap = () => {
 					updateInterval: 200,
 					opacity: 1,
 					className: "tile-loaded",
+					errorTileUrl: "",
 				}
 			);
 
@@ -174,9 +177,55 @@ export const GTAMap = () => {
 				fadeAnimation: false,
 				zoomAnimation: true,
 				markerZoomAnimation: true,
+				zoomSnap: 1,
+				zoomDelta: 1,
 			});
 
 			mapInstanceRef.current = mymap;
+
+			// Fonction pour ajuster le zoom selon la couche active
+			const adjustZoomForLayer = () => {
+				if (!mymap) return;
+
+				let activeTileLayer: any = null;
+				mymap.eachLayer((layer: any) => {
+					if (layer instanceof L.TileLayer && !activeTileLayer) {
+						activeTileLayer = layer;
+					}
+				});
+
+				if (activeTileLayer && activeTileLayer.options) {
+					const maxZoom = activeTileLayer.options.maxZoom || 8;
+					const currentZoom = mymap.getZoom();
+
+					// Ajuster le maxZoom de la carte
+					mymap.setMaxZoom(maxZoom);
+
+					// Si le zoom actuel dépasse le maxZoom de la couche, réduire le zoom
+					if (currentZoom > maxZoom) {
+						mymap.setZoom(maxZoom);
+					}
+				}
+			};
+
+			// Écouter les changements de couches
+			mymap.on("baselayerchange", adjustZoomForLayer);
+
+			// Écouter les événements de zoom pour s'assurer qu'on ne dépasse pas les limites
+			mymap.on("zoomend", () => {
+				const currentZoom = mymap.getZoom();
+				const maxZoom = mymap.getMaxZoom();
+				const minZoom = mymap.getMinZoom();
+
+				if (currentZoom > maxZoom) {
+					mymap.setZoom(maxZoom);
+				} else if (currentZoom < minZoom) {
+					mymap.setZoom(minZoom);
+				}
+			});
+
+			// Ajuster le zoom initial
+			adjustZoomForLayer();
 
 			(window as any).mapLayers = {
 				Satelite: SateliteStyle,
@@ -267,13 +316,23 @@ export const GTAMap = () => {
 	}, [markers]);
 
 	const handleZoomIn = () => {
-		if (mapInstanceRef.current) {
+		if (!mapInstanceRef.current) return;
+
+		const currentZoom = mapInstanceRef.current.getZoom();
+		const maxZoom = mapInstanceRef.current.getMaxZoom();
+
+		if (currentZoom < maxZoom) {
 			mapInstanceRef.current.zoomIn();
 		}
 	};
 
 	const handleZoomOut = () => {
-		if (mapInstanceRef.current) {
+		if (!mapInstanceRef.current) return;
+
+		const currentZoom = mapInstanceRef.current.getZoom();
+		const minZoom = mapInstanceRef.current.getMinZoom();
+
+		if (currentZoom > minZoom) {
 			mapInstanceRef.current.zoomOut();
 		}
 	};
