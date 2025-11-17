@@ -30,23 +30,18 @@ export type AuthPermission = z.infer<typeof AuthPermissionSchema>;
 export const ac = createAccessControl(statement);
 
 export const member = ac.newRole({
-	marker: ["create", "update"],
 	...memberAc.statements,
+	marker: ["create", "update"],
 });
 
 export const admin = ac.newRole({
-	marker: ["create", "update", "delete"],
 	...adminAc.statements,
-	organization: (adminAc.statements as any).organization
-		? (((adminAc.statements as any).organization as string[]).filter(
-				(action) => action !== "delete"
-		  ) as any)
-		: ([] as any),
+	marker: ["create", "update", "delete"],
 });
 
 export const owner = ac.newRole({
-	...(statement as Statements),
 	...ownerAc.statements,
+	...(statement as Statements),
 });
 
 export const roles = { member, admin, owner } as const;
