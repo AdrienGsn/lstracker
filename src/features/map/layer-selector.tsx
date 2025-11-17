@@ -14,6 +14,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type MapLayerId = "Satelite" | "Atlas" | "Grid";
 
@@ -185,11 +190,18 @@ export const LayerSelector = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="secondary" size="icon">
-					<Layers />
-				</Button>
-			</DropdownMenuTrigger>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<DropdownMenuTrigger asChild>
+						<Button variant="secondary" size="icon">
+							<Layers />
+						</Button>
+					</DropdownMenuTrigger>
+				</TooltipTrigger>
+				<TooltipContent side="left">
+					Changer le style de carte
+				</TooltipContent>
+			</Tooltip>
 			<DropdownMenuContent side="left" className="min-w-[220px]">
 				<DropdownMenuLabel>Style de carte</DropdownMenuLabel>
 				<DropdownMenuSeparator />

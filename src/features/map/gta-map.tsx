@@ -50,6 +50,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { authClient } from "@/lib/auth/client";
 import { logger } from "@/lib/logger";
 import { dialog } from "@/providers/dialog-provider";
@@ -594,19 +599,42 @@ export const GTAMap = () => {
 				className="h-fit bottom-2 right-2 absolute z-50"
 			>
 				<LayerSelector />
-				<Button
-					variant="secondary"
-					size="icon"
-					onClick={() => setIsFullscreen(!isFullscreen)}
-				>
-					<Fullscreen />
-				</Button>
-				<Button variant="secondary" size="icon" onClick={handleZoomIn}>
-					<ZoomIn />
-				</Button>
-				<Button variant="secondary" size="icon" onClick={handleZoomOut}>
-					<ZoomOut />
-				</Button>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							variant="secondary"
+							size="icon"
+							onClick={() => setIsFullscreen(!isFullscreen)}
+						>
+							<Fullscreen />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="left">Plein écran</TooltipContent>
+				</Tooltip>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							variant="secondary"
+							size="icon"
+							onClick={handleZoomIn}
+						>
+							<ZoomIn />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="left">Agrandir</TooltipContent>
+				</Tooltip>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							variant="secondary"
+							size="icon"
+							onClick={handleZoomOut}
+						>
+							<ZoomOut />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="left">Réduire</TooltipContent>
+				</Tooltip>
 			</ButtonGroup>
 			{isPending || isLoading ? (
 				<div className="absolute top-0 left-0 size-full z-50 flex items-center justify-center bg-black/75 rounded-lg">
