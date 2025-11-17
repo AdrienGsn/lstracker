@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const CreateMarkerSchema = z.object({
+export const UpdateMarkerSchema = z.object({
+	markerId: z.string(),
 	label: z
 		.string({ error: "Veuillez entrer un nom" })
 		.min(3, "Le nom doit contenir au moins 3 caractères")
@@ -11,7 +12,6 @@ export const CreateMarkerSchema = z.object({
 	icon: z.string().optional(),
 	lat: z.string(),
 	lng: z.string(),
-	teamId: z.string().optional(),
 });
 
-export type CreateMarkerSchemaType = z.infer<typeof CreateMarkerSchema>;
+export type UpdateMarkerSchemaType = z.infer<typeof UpdateMarkerSchema>;

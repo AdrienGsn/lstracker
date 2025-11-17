@@ -1,12 +1,12 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
-import { admin, organization } from "better-auth/plugins";
+import { admin as adminPlugin, organization } from "better-auth/plugins";
 
 import { siteConfig } from "@/config/site";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrganization } from "./org";
-import { ac, admin as adminAC, member, owner } from "./permissions";
+import { ac, admin, member, owner } from "./permissions";
 
 export const auth = betterAuth({
 	database: prismaAdapter(prisma, { provider: "postgresql" }),
@@ -60,12 +60,12 @@ export const auth = betterAuth({
 			ac,
 			roles: {
 				owner,
-				adminAC,
+				admin,
 				member,
 			},
 			teams: { enabled: true },
 		}),
-		admin(),
+		adminPlugin(),
 		nextCookies(),
 	],
 });

@@ -1,14 +1,35 @@
 "use client";
 
 import { Marker } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
+import {
+	QueryClientProvider,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 import type { Map } from "leaflet";
-import { Copy, Fullscreen, Pencil, ZoomIn, ZoomOut } from "lucide-react";
+import { Copy, Fullscreen, Pencil, Trash, ZoomIn, ZoomOut } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { toast } from "sonner";
 
 import "leaflet/dist/leaflet.css";
 
+import { deleteMarkerAction } from "@/actions/marker/delete";
+import { updateMarkerAction } from "@/actions/marker/update";
+import {
+	UpdateMarkerSchema,
+	UpdateMarkerSchemaType,
+} from "@/actions/marker/update/schema";
+import { LoadingButton } from "@/components/loading-button";
+import {
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -18,8 +39,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+	useZodForm,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { authClient } from "@/lib/auth/client";
+import { logger } from "@/lib/logger";
+import { dialog } from "@/providers/dialog-provider";
+import { BlipSelector } from "./blip-selector";
 
 const fetchMarkers = async () => {
 	const response = await fetch("/api/markers");
@@ -31,7 +65,158 @@ const fetchMarkers = async () => {
 	return response.json() as Promise<Marker[]>;
 };
 
-const MarkerPopup = ({ marker }: { marker: Marker }) => {
+type MarkerPopupProps = {
+	marker: Marker;
+};
+
+const UpdateMarkerForm = ({ marker }: MarkerPopupProps) => {
+	logger.debug(marker);
+	const form = useZodForm({
+		schema: UpdateMarkerSchema,
+		defaultValues: {
+			markerId: marker.id,
+			label: marker.label ?? "",
+			icon: marker.icon ?? "default.png",
+			lat: marker.lat.toString() ?? "0",
+			lng: marker.lng.toString() ?? "0",
+		},
+	});
+
+	const { executeAsync: updateMarker, isPending: updateMarkerPending } =
+		useAction(updateMarkerAction, {
+			onSuccess: () => {
+				toast.success("Le marqueur a bien été modifié !");
+
+				if (typeof window !== "undefined") {
+					window.location.reload();
+				}
+			},
+			onError: ({ error }) => {
+				toast.error(error.serverError);
+			},
+		});
+
+	const onSubmit = async (data: UpdateMarkerSchemaType) => {
+		await updateMarker(data);
+	};
+
+	return (
+		<>
+			<AlertDialogHeader>
+				<AlertDialogTitle>
+					Créer une nouvelle organisation
+				</AlertDialogTitle>
+				<AlertDialogDescription>
+					Créez une organisation pour regrouper des membres et
+					collaborer efficacement.
+				</AlertDialogDescription>
+			</AlertDialogHeader>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className="space-y-6"
+				>
+					<BlipSelector form={form} fieldName="icon" />
+					<FormField
+						control={form.control}
+						name="label"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Label</FormLabel>
+								<FormControl>
+									<Input {...field} placeholder="label" />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="lat"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Latitude</FormLabel>
+								<FormControl>
+									<Input {...field} placeholder="Latitude" />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="lng"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Longitude</FormLabel>
+								<FormControl>
+									<Input {...field} placeholder="Longitude" />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<AlertDialogFooter>
+						<AlertDialogCancel type="button">
+							Retour
+						</AlertDialogCancel>
+						<AlertDialogAction
+							disabled={updateMarkerPending}
+							asChild
+						>
+							<LoadingButton
+								loading={updateMarkerPending}
+								type="submit"
+							>
+								Modifier
+							</LoadingButton>
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</form>
+			</Form>
+		</>
+	);
+};
+
+const MarkerPopup = ({ marker }: MarkerPopupProps) => {
+	const { data: canEditMarker } = useQuery({
+		queryKey: ["marker-edit-permission"],
+		queryFn: async () => {
+			const { data } = await authClient.organization.hasPermission({
+				permission: { marker: ["update"] },
+			});
+
+			return Boolean(data?.success);
+		},
+		staleTime: 5 * 60 * 1000,
+	});
+
+	const { data: canDeleteMarker } = useQuery({
+		queryKey: ["marker-delete-permission"],
+		queryFn: async () => {
+			const { data } = await authClient.organization.hasPermission({
+				permission: { marker: ["delete"] },
+			});
+
+			return Boolean(data?.success);
+		},
+		staleTime: 5 * 60 * 1000,
+	});
+
+	const { executeAsync: deleteMarker, isPending: deleteMarkerPending } =
+		useAction(deleteMarkerAction, {
+			onSuccess: () => {
+				toast.success("Le marqueur a bien été supprimé !");
+
+				if (typeof window !== "undefined") {
+					window.location.reload();
+				}
+			},
+			onError: ({ error }) => {
+				toast.error(error.serverError);
+			},
+		});
+
 	return (
 		<Card>
 			<CardHeader>
@@ -41,16 +226,47 @@ const MarkerPopup = ({ marker }: { marker: Marker }) => {
 				</CardDescription>
 			</CardHeader>
 			<CardFooter className="gap-2 justify-end">
-				{authClient.organization.checkRolePermission({
-					role: "admin",
-					permission: { marker: ["update"] },
-				})}
-				<Button variant="secondary" size="icon">
-					<Pencil />
-				</Button>
 				<Button size="icon">
 					<Copy />
 				</Button>
+				{canEditMarker ? (
+					<LoadingButton
+						variant="secondary"
+						size="icon"
+						onClick={() => {
+							dialog.add({
+								children: <UpdateMarkerForm marker={marker} />,
+							});
+						}}
+					>
+						<Pencil />
+					</LoadingButton>
+				) : null}
+				{canDeleteMarker ? (
+					<LoadingButton
+						variant="destructive"
+						size="icon"
+						loading={deleteMarkerPending}
+						onClick={() => {
+							dialog.add({
+								title: "Êtes-vous sûr de vouloir supprimer ce marqueur ?",
+								description:
+									"Cette action est irréversible. Le marqueur sera définitivement supprimé.",
+								action: {
+									label: "Supprimer",
+									variant: "destructive",
+									onClick: async () => {
+										await deleteMarker({
+											markerId: marker.id,
+										});
+									},
+								},
+							});
+						}}
+					>
+						<Trash />
+					</LoadingButton>
+				) : null}
 			</CardFooter>
 		</Card>
 	);
@@ -60,6 +276,7 @@ export const GTAMap = () => {
 	const mapRef = useRef<HTMLDivElement>(null);
 	const mapInstanceRef = useRef<Map | null>(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const queryClient = useQueryClient();
 
 	const {
 		data: markers,
@@ -300,7 +517,11 @@ export const GTAMap = () => {
 					if (!root) {
 						root = createRoot(popupContainer);
 					}
-					root.render(<MarkerPopup marker={marker} />);
+					root.render(
+						<QueryClientProvider client={queryClient}>
+							<MarkerPopup marker={marker} />
+						</QueryClientProvider>
+					);
 				});
 
 				leafletMarker.on("popupclose", () => {

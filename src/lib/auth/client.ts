@@ -9,6 +9,24 @@ export const authClient = createAuthClient({
 	plugins: [
 		organizationClient({
 			teams: { enabled: true },
+			schema: {
+				team: {
+					additionalFields: {
+						metadata: {
+							type: "string",
+							required: false,
+						},
+					},
+				},
+				invitation: {
+					additionalFields: {
+						teamId: {
+							type: "string",
+							required: false,
+						},
+					},
+				},
+			},
 			ac,
 			roles: {
 				owner,
