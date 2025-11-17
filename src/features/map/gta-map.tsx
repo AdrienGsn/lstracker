@@ -54,6 +54,7 @@ import { authClient } from "@/lib/auth/client";
 import { logger } from "@/lib/logger";
 import { dialog } from "@/providers/dialog-provider";
 import { BlipSelector } from "./blip-selector";
+import { LayerSelector } from "./layer-selector";
 
 const fetchMarkers = async () => {
 	const response = await fetch("/api/markers");
@@ -400,7 +401,6 @@ export const GTAMap = () => {
 
 			mapInstanceRef.current = mymap;
 
-			// Fonction pour ajuster le zoom selon la couche active
 			const adjustZoomForLayer = () => {
 				if (!mymap) return;
 
@@ -415,20 +415,16 @@ export const GTAMap = () => {
 					const maxZoom = activeTileLayer.options.maxZoom || 8;
 					const currentZoom = mymap.getZoom();
 
-					// Ajuster le maxZoom de la carte
 					mymap.setMaxZoom(maxZoom);
 
-					// Si le zoom actuel dépasse le maxZoom de la couche, réduire le zoom
 					if (currentZoom > maxZoom) {
 						mymap.setZoom(maxZoom);
 					}
 				}
 			};
 
-			// Écouter les changements de couches
 			mymap.on("baselayerchange", adjustZoomForLayer);
 
-			// Écouter les événements de zoom pour s'assurer qu'on ne dépasse pas les limites
 			mymap.on("zoomend", () => {
 				const currentZoom = mymap.getZoom();
 				const maxZoom = mymap.getMaxZoom();
@@ -441,7 +437,6 @@ export const GTAMap = () => {
 				}
 			});
 
-			// Ajuster le zoom initial
 			adjustZoomForLayer();
 
 			(window as any).mapLayers = {
@@ -598,6 +593,7 @@ export const GTAMap = () => {
 				orientation="vertical"
 				className="h-fit bottom-2 right-2 absolute z-50"
 			>
+				<LayerSelector />
 				<Button
 					variant="secondary"
 					size="icon"

@@ -181,6 +181,7 @@ export type CreateMarkerBtnProps = {
 export const CreateMarkerBtn = (props: CreateMarkerBtnProps) => {
 	return (
 		<Button
+			variant="secondary"
 			onClick={() => {
 				dialog.add({
 					children: <CreateForm teams={props.teams} />,
