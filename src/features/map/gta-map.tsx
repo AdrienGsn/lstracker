@@ -144,12 +144,9 @@ const UpdateMarkerForm = ({ marker }: MarkerPopupProps) => {
 	return (
 		<>
 			<AlertDialogHeader>
-				<AlertDialogTitle>
-					Créer une nouvelle organisation
-				</AlertDialogTitle>
+				<AlertDialogTitle>Modifier le marqueur</AlertDialogTitle>
 				<AlertDialogDescription>
-					Créez une organisation pour regrouper des membres et
-					collaborer efficacement.
+					Modifiez les informations du marqueur puis validez.
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<Form {...form}>
