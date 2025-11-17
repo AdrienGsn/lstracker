@@ -70,7 +70,6 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { authClient } from "@/lib/auth/client";
-import { logger } from "@/lib/logger";
 import { dialog } from "@/providers/dialog-provider";
 import { BlipSelector } from "./blip-selector";
 import { LayerSelector } from "./layer-selector";
@@ -113,7 +112,6 @@ const createLeafletIcon = (L: any, icon: string | number) =>
 	});
 
 const UpdateMarkerForm = ({ marker }: MarkerPopupProps) => {
-	logger.debug(marker);
 	const form = useZodForm({
 		schema: UpdateMarkerSchema,
 		defaultValues: {
