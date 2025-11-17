@@ -1,20 +1,25 @@
 "use client";
 
-import { Marker } from "@prisma/client";
+import { Marker, Team } from "@prisma/client";
 import {
 	QueryClientProvider,
 	useQuery,
 	useQueryClient,
 } from "@tanstack/react-query";
-import type { Map } from "leaflet";
+import type { Marker as LeafletMarker, LeafletMouseEvent, Map } from "leaflet";
 import { Copy, Fullscreen, Pencil, Trash, ZoomIn, ZoomOut } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { toast } from "sonner";
 
 import "leaflet/dist/leaflet.css";
 
+import { createMarkerAction } from "@/actions/marker/create";
+import {
+	CreateMarkerSchema,
+	CreateMarkerSchemaType,
+} from "@/actions/marker/create/schema";
 import { deleteMarkerAction } from "@/actions/marker/delete";
 import { updateMarkerAction } from "@/actions/marker/update";
 import {
@@ -23,8 +28,10 @@ import {
 } from "@/actions/marker/update/schema";
 import { LoadingButton } from "@/components/loading-button";
 import {
+	AlertDialog,
 	AlertDialogAction,
 	AlertDialogCancel,
+	AlertDialogContent,
 	AlertDialogDescription,
 	AlertDialogFooter,
 	AlertDialogHeader,
@@ -51,6 +58,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
@@ -74,6 +88,29 @@ const fetchMarkers = async () => {
 type MarkerPopupProps = {
 	marker: Marker;
 };
+
+type CreateMarkerModalState = {
+	isOpen: boolean;
+	lat: string;
+	lng: string;
+};
+
+type CreateMarkerModalProps = {
+	teams: Team[];
+	isOpen: boolean;
+	lat: string;
+	lng: string;
+	onClose: () => void;
+	onCreated: () => Promise<void> | void;
+};
+
+const createLeafletIcon = (L: any, icon: string | number) =>
+	L.icon({
+		iconUrl: `./images/blips/${icon}`,
+		iconSize: [20, 20],
+		iconAnchor: [10, 10],
+		popupAnchor: [0, -10],
+	});
 
 const UpdateMarkerForm = ({ marker }: MarkerPopupProps) => {
 	logger.debug(marker);
@@ -278,11 +315,222 @@ const MarkerPopup = ({ marker }: MarkerPopupProps) => {
 	);
 };
 
-export const GTAMap = () => {
+export function CreateMarkerModal(props: CreateMarkerModalProps) {
+	const form = useZodForm({
+		schema: CreateMarkerSchema,
+		defaultValues: {
+			label: "",
+			icon: "default.png",
+			lat: props.lat,
+			lng: props.lng,
+			teamId: "none",
+		},
+	});
+
+	useEffect(() => {
+		if (!props.isOpen) return;
+
+		form.setValue("lat", props.lat);
+		form.setValue("lng", props.lng);
+
+		if (!form.getValues("teamId")) {
+			form.setValue("teamId", "none");
+		}
+
+		if (!form.getValues("icon")) {
+			form.setValue("icon", "default.png");
+		}
+	}, [form, props.isOpen, props.lat, props.lng]);
+
+	useEffect(() => {
+		if (props.isOpen) return;
+
+		form.reset({
+			label: "",
+			icon: "default.png",
+			lat: "",
+			lng: "",
+			teamId: "none",
+		});
+	}, [form, props.isOpen]);
+
+	const { executeAsync, isPending } = useAction(createMarkerAction, {
+		onSuccess: async () => {
+			toast.success("Le marqueur a été créé avec succès !");
+			await props.onCreated();
+		},
+		onError: ({ error }) => {
+			toast.error(error.serverError);
+		},
+	});
+
+	const onSubmit = async (data: CreateMarkerSchemaType) => {
+		await executeAsync(data);
+	};
+
+	return (
+		<AlertDialog
+			open={props.isOpen}
+			onOpenChange={(open) => {
+				if (!open) {
+					props.onClose();
+				}
+			}}
+		>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>
+						Créer un nouveau marqueur
+					</AlertDialogTitle>
+					<AlertDialogDescription>
+						Ajoutez un marqueur à la carte en renseignant les
+						informations ci-dessous.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="flex flex-col gap-6"
+					>
+						<BlipSelector form={form} fieldName="icon" />
+						<FormField
+							control={form.control}
+							name="label"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Label</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											placeholder="Nom du marqueur"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="lat"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Latitude</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											placeholder="Latitude"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="lng"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Longitude</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											placeholder="Longitude"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{props.teams.length > 0 ? (
+							<FormField
+								control={form.control}
+								name="teamId"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Equipe</FormLabel>
+										<FormControl>
+											<Select
+												value={field.value ?? "none"}
+												onValueChange={field.onChange}
+											>
+												<SelectTrigger className="w-full">
+													<SelectValue placeholder="Sélectionnez une équipe" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="none">
+														Aucune
+													</SelectItem>
+													{props.teams.map((team) => (
+														<SelectItem
+															key={team.id}
+															value={team.id}
+														>
+															{team.name}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						) : null}
+						<AlertDialogFooter>
+							<AlertDialogCancel type="button">
+								Retour
+							</AlertDialogCancel>
+							<LoadingButton loading={isPending} type="submit">
+								Créer
+							</LoadingButton>
+						</AlertDialogFooter>
+					</form>
+				</Form>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
+
+type GTAMapProps = {
+	teams: Team[];
+	canCreateMarker: boolean;
+};
+
+export function GTAMap(props: GTAMapProps) {
 	const mapRef = useRef<HTMLDivElement>(null);
 	const mapInstanceRef = useRef<Map | null>(null);
+	const temporaryMarkerRef = useRef<LeafletMarker | null>(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [createModalState, setCreateModalState] =
+		useState<CreateMarkerModalState>({
+			isOpen: false,
+			lat: "",
+			lng: "",
+		});
 	const queryClient = useQueryClient();
+
+	const clearTemporaryMarker = useCallback(() => {
+		if (temporaryMarkerRef.current && mapInstanceRef.current) {
+			mapInstanceRef.current.removeLayer(temporaryMarkerRef.current);
+			temporaryMarkerRef.current = null;
+		}
+	}, []);
+
+	const handleCloseCreateModal = useCallback(() => {
+		clearTemporaryMarker();
+		setCreateModalState({ isOpen: false, lat: "", lng: "" });
+	}, [clearTemporaryMarker]);
+
+	const handleCreateSuccess = useCallback(async () => {
+		await queryClient.refetchQueries({ queryKey: ["markers"] });
+		handleCloseCreateModal();
+	}, [handleCloseCreateModal, queryClient]);
+
+	useEffect(() => {
+		if (!props.canCreateMarker) {
+			handleCloseCreateModal();
+		}
+	}, [handleCloseCreateModal, props.canCreateMarker]);
 
 	const {
 		data: markers,
@@ -444,6 +692,28 @@ export const GTAMap = () => {
 
 			adjustZoomForLayer();
 
+			if (props.canCreateMarker) {
+				mymap.on("click", (event: LeafletMouseEvent) => {
+					clearTemporaryMarker();
+
+					const placeholderMarker = L.marker(
+						[event.latlng.lat, event.latlng.lng],
+						{
+							icon: createLeafletIcon(L, "default.png"),
+						}
+					);
+
+					placeholderMarker.addTo(mymap);
+					temporaryMarkerRef.current = placeholderMarker;
+
+					setCreateModalState({
+						isOpen: true,
+						lat: event.latlng.lng.toFixed(4),
+						lng: event.latlng.lat.toFixed(4),
+					});
+				});
+			}
+
 			(window as any).mapLayers = {
 				Satelite: SateliteStyle,
 				Atlas: AtlasStyle,
@@ -458,8 +728,10 @@ export const GTAMap = () => {
 				mapInstanceRef.current.remove();
 				mapInstanceRef.current = null;
 			}
+
+			clearTemporaryMarker();
 		};
-	}, []);
+	}, [clearTemporaryMarker, props.canCreateMarker, setCreateModalState]);
 
 	useEffect(() => {
 		if (isFullscreen) {
@@ -483,25 +755,18 @@ export const GTAMap = () => {
 		const L = (window as any).L;
 		if (!L) return;
 
-		function customIcon(icon: string | number) {
-			return L.icon({
-				iconUrl: `./images/blips/${icon}`,
-				iconSize: [20, 20],
-				iconAnchor: [10, 10],
-				popupAnchor: [0, -10],
-			});
-		}
-
 		mapInstanceRef.current.eachLayer((layer: any) => {
 			if (layer instanceof L.Marker) {
-				mapInstanceRef.current?.removeLayer(layer);
+				if (temporaryMarkerRef.current !== layer) {
+					mapInstanceRef.current?.removeLayer(layer);
+				}
 			}
 		});
 
 		if (markers.length > 0) {
-			markers.map((marker) => {
+			markers.forEach((marker) => {
 				const leafletMarker = L.marker([marker.lng, marker.lat], {
-					icon: customIcon(marker.icon),
+					icon: createLeafletIcon(L, marker.icon ?? "default.png"),
 				}).addTo(mapInstanceRef.current!);
 
 				const popupContainer = document.createElement("div");
@@ -534,7 +799,7 @@ export const GTAMap = () => {
 				});
 			});
 		}
-	}, [markers]);
+	}, [markers, queryClient]);
 
 	const handleZoomIn = () => {
 		if (!mapInstanceRef.current) return;
@@ -641,6 +906,16 @@ export const GTAMap = () => {
 					<Loader />
 				</div>
 			) : null}
+			{props.canCreateMarker ? (
+				<CreateMarkerModal
+					teams={props.teams}
+					isOpen={createModalState.isOpen}
+					lat={createModalState.lat}
+					lng={createModalState.lng}
+					onClose={handleCloseCreateModal}
+					onCreated={handleCreateSuccess}
+				/>
+			) : null}
 		</div>
 	);
-};
+}
