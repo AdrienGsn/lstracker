@@ -7,7 +7,15 @@ import {
 	useQueryClient,
 } from "@tanstack/react-query";
 import type { Marker as LeafletMarker, LeafletMouseEvent, Map } from "leaflet";
-import { Copy, Fullscreen, Pencil, Trash, ZoomIn, ZoomOut } from "lucide-react";
+import {
+	Check,
+	Copy,
+	Fullscreen,
+	Pencil,
+	Trash,
+	ZoomIn,
+	ZoomOut,
+} from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -70,6 +78,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { authClient } from "@/lib/auth/client";
+import { cn } from "@/lib/utils";
 import { dialog } from "@/providers/dialog-provider";
 import { BlipSelector } from "./blip-selector";
 import { LayerSelector } from "./layer-selector";
@@ -255,6 +264,19 @@ const MarkerPopup = ({ marker }: MarkerPopupProps) => {
 			},
 		});
 
+	const [copied, setCopied] = useState(false);
+
+	const copyToClipboard = () => {
+		navigator.clipboard.writeText(`${marker.lat}, ${marker.lng}`).then(
+			() => {
+				toast.success("Coordonnées copiées dans le presse-papier !");
+			},
+			() => {
+				toast.error("Erreur lors de la copie des coordonnées.");
+			}
+		);
+	};
+
 	return (
 		<Card>
 			<CardHeader>
@@ -264,8 +286,17 @@ const MarkerPopup = ({ marker }: MarkerPopupProps) => {
 				</CardDescription>
 			</CardHeader>
 			<CardFooter className="gap-2 justify-end">
-				<Button size="icon">
-					<Copy />
+				<Button
+					size="icon"
+					onClick={() => {
+						copyToClipboard();
+						setCopied(true);
+						setTimeout(() => setCopied(false), 700);
+					}}
+					className={cn(copied && "animate-bounce")}
+					aria-label="Copier les coordonnées"
+				>
+					{copied ? <Check /> : <Copy />}
 				</Button>
 				{canEditMarker ? (
 					<LoadingButton
