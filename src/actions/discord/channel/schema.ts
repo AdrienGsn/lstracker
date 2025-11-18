@@ -1,4 +1,14 @@
+import { ButtonStyle } from "discord.js";
 import { z } from "zod";
+
+const ButtonSchema = z.object({
+	customId: z.string().min(1).max(100).optional(),
+	label: z.string().min(1).max(80),
+	style: z.nativeEnum(ButtonStyle).optional(),
+	emoji: z.string().optional(),
+	disabled: z.boolean().optional(),
+	url: z.string().optional(),
+});
 
 const EmbedSchema = z.object({
 	title: z.string().optional(),
@@ -45,6 +55,7 @@ export const SendToDiscordChannelSchema = z
 		channelId: z.string(),
 		message: z.string().optional(),
 		embed: EmbedSchema.optional(),
+		buttons: z.array(ButtonSchema).max(25).optional(),
 	})
 	.refine(
 		(data) => data.message || data.embed,
