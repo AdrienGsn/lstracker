@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { Layout, LayoutContent } from "@/components/page/layout";
 import {
 	Card,
@@ -19,8 +21,12 @@ export async function generateMetadata() {
 		select: { name: true },
 	});
 
+	if (!org) {
+		return notFound();
+	}
+
 	return {
-		title: `Paramètres - ${org?.name}`,
+		title: `Paramètres - ${org.name}`,
 	};
 }
 

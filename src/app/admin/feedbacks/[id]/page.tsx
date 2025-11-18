@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: PageParams<{ id: string }>) {
 	if (!feedback) {
 		return notFound();
 	}
+
 	return {
 		title: `${feedback.user?.name} - Feedback - Administration`,
 	};

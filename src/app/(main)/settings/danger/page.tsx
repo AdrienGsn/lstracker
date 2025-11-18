@@ -23,8 +23,12 @@ export async function generateMetadata() {
 		select: { name: true },
 	});
 
+	if (!org) {
+		return notFound();
+	}
+
 	return {
-		title: `Zone de danger - Paramètres - ${org?.name}`,
+		title: `Zone de danger - Paramètres - ${org.name}`,
 	};
 }
 

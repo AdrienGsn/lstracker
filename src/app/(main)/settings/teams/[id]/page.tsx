@@ -15,8 +15,12 @@ export async function generateMetadata({ params }: PageParams<{ id: string }>) {
 		select: { name: true, organization: { select: { name: true } } },
 	});
 
+	if (!team) {
+		return notFound();
+	}
+
 	return {
-		title: `${team?.name} - Paramètres - ${team?.organization.name}`,
+		title: `${team.name} - Paramètres - ${team.organization.name}`,
 	};
 }
 
