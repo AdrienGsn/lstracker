@@ -68,15 +68,15 @@ export const DiscordChannelSelector = <T extends FieldValues>(
 			control={props.form.control}
 			name={props.fieldName as any}
 			render={({ field }) => (
-				<FormItem>
+				<FormItem className="w-full">
 					<FormLabel>Channel associé :</FormLabel>
-					<FormControl>
+					<FormControl className="w-full">
 						<Select
 							value={field.value}
 							onValueChange={field.onChange}
 							disabled={loading || channels.length === 0}
 						>
-							<SelectTrigger>
+							<SelectTrigger className="w-full">
 								<SelectValue placeholder="Sélectionnez un channel" />
 							</SelectTrigger>
 							<SelectContent side="bottom">

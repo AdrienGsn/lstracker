@@ -10,10 +10,17 @@ import { CreateTeamSchema } from "./schema";
 export const createTeamAction = orgAction
 	.metadata({ permissions: { team: ["create"] } })
 	.inputSchema(CreateTeamSchema)
-	.action(async ({ parsedInput: { name }, ctx }) => {
+	.action(async ({ parsedInput: { name, channelId }, ctx }) => {
 		const team = await auth.api.createTeam({
 			body: {
 				name,
+				...(channelId !== undefined
+					? {
+							metadata: channelId
+								? JSON.stringify({ channelId })
+								: undefined,
+					  }
+					: {}),
 			},
 			headers: await headers(),
 		});
