@@ -198,8 +198,13 @@ export const MemberPage = (props: MemberPageProps) => {
 					<CardContent>
 						<MemberTeamsTable
 							columns={memberTeamsTable}
-							data={props.member.user.teamMembers.map(
-								(teamMember) => {
+							data={props.member.user.teamMembers
+								.filter(
+									(teamMember) =>
+										teamMember.team.organizationId ===
+										props.member.organizationId
+								)
+								.map((teamMember) => {
 									const { teamMembers, ...user } =
 										props.member.user;
 									return {
@@ -207,8 +212,7 @@ export const MemberPage = (props: MemberPageProps) => {
 										user,
 										team: teamMember.team,
 									};
-								}
-							)}
+								})}
 						/>
 					</CardContent>
 				</Card>
