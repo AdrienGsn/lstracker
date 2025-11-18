@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { DiscordIcon } from "@/components/icons/discord-icon";
@@ -9,6 +10,10 @@ import { authConfig } from "@/config/auth";
 import { authClient } from "@/lib/auth/client";
 
 export const SigninForm = () => {
+	const searchParams = useSearchParams();
+	const redirectUrl =
+		searchParams.get("redirectUrl") || authConfig.callbackUrl;
+
 	const [loading, setLoading] = useState(false);
 
 	return (
@@ -27,7 +32,7 @@ export const SigninForm = () => {
 
 						await authClient.signIn.social({
 							provider: "discord",
-							callbackURL: authConfig.callbackUrl,
+							callbackURL: redirectUrl,
 						});
 					}}
 				>
