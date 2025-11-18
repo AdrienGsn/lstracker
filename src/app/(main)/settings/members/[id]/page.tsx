@@ -18,6 +18,10 @@ export async function generateMetadata({ params }: PageParams<{ id: string }>) {
 		},
 	});
 
+	if (!member) {
+		return notFound();
+	}
+
 	return {
 		title: `${member?.user?.name} - Membres - Paramètres - ${member?.organization.name}`,
 	};

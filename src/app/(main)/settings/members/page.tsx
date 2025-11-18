@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 
 import {
 	Layout,
@@ -25,8 +26,12 @@ export async function generateMetadata() {
 		select: { name: true },
 	});
 
+	if (!org) {
+		return notFound();
+	}
+
 	return {
-		title: `Membres - Paramètres - ${org?.name}`,
+		title: `Membres - Paramètres - ${org.name}`,
 	};
 }
 

@@ -1,5 +1,6 @@
 import { Team } from "@prisma/client";
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 
 import { GTAMap } from "@/features/map/gta-map";
 import { auth } from "@/lib/auth";
@@ -12,19 +13,25 @@ export async function generateMetadata() {
 
 	if (!session?.activeOrganizationId) {
 		return {
-			title: "Carte",
+			title: "",
 		};
 	}
 
-	const team = await prisma.team.findUnique({
-		where: { id: session.activeTeamId! },
-		select: { name: true },
-	});
+	const team = session.activeTeamId
+		? await prisma.team.findUnique({
+				where: { id: session.activeTeamId! },
+				select: { name: true },
+		  })
+		: null;
 
 	const org = await prisma.organization.findUnique({
 		where: { id: session.activeOrganizationId },
 		select: { name: true },
 	});
+
+	if (!org) {
+		return notFound();
+	}
 
 	return {
 		title: team ? `${team.name} - ${org?.name}` : `${org?.name}`,

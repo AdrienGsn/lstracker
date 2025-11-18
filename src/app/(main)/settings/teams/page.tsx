@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import {
 	Layout,
 	LayoutActions,
@@ -22,8 +24,12 @@ export async function generateMetadata() {
 		select: { name: true },
 	});
 
+	if (!org) {
+		return notFound();
+	}
+
 	return {
-		title: `Équipes - Paramètres - ${org?.name}`,
+		title: `Équipes - Paramètres - ${org.name}`,
 	};
 }
 
