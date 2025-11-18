@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import {
 	Layout,
 	LayoutContent,
@@ -6,6 +8,10 @@ import {
 	LayoutTitle,
 } from "@/components/page/layout";
 import type { PageParams } from "@/types/next";
+
+export const metadata: Metadata = {
+	title: "Politique de confidentialité",
+};
 
 export default async function RoutePage(props: PageParams) {
 	return (

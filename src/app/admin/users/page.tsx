@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import {
 	Layout,
 	LayoutContent,
@@ -9,6 +11,10 @@ import { UsersTable } from "@/features/admin/users/users-table";
 import { usersTable } from "@/features/admin/users/users-table/columns";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
+
+export const metadata: Metadata = {
+	title: "Utilisateurs - Administration",
+};
 
 export default async function RoutePage(props: PageParams) {
 	const users = await prisma.user.findMany();

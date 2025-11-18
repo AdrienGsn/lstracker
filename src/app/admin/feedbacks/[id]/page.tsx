@@ -20,6 +20,22 @@ import {
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 
+export async function generateMetadata({ params }: PageParams<{ id: string }>) {
+	const { id } = await params;
+
+	const feedback = await prisma.bugReport.findUnique({
+		where: { id },
+		select: { user: { select: { name: true } } },
+	});
+
+	if (!feedback) {
+		return notFound();
+	}
+	return {
+		title: `${feedback.user?.name} - Feedback - Administration`,
+	};
+}
+
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;
 

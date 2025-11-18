@@ -7,6 +7,22 @@ import { prisma } from "@/lib/prisma";
 import { MarkerWithRelations } from "@/types/marker";
 import type { PageParams } from "@/types/next";
 
+export async function generateMetadata({ params }: PageParams<{ id: string }>) {
+	const { id } = await params;
+
+	const member = await prisma.member.findUnique({
+		where: { id },
+		select: {
+			user: { select: { name: true } },
+			organization: { select: { name: true } },
+		},
+	});
+
+	return {
+		title: `${member?.user?.name} - Membres - Paramètres - ${member?.organization.name}`,
+	};
+}
+
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;
 

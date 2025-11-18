@@ -7,6 +7,30 @@ import { requiredCurrentUserCache } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 
+export async function generateMetadata() {
+	const { user, session } = await requiredCurrentUserCache();
+
+	if (!session?.activeOrganizationId) {
+		return {
+			title: "Carte",
+		};
+	}
+
+	const team = await prisma.team.findUnique({
+		where: { id: session.activeTeamId! },
+		select: { name: true },
+	});
+
+	const org = await prisma.organization.findUnique({
+		where: { id: session.activeOrganizationId },
+		select: { name: true },
+	});
+
+	return {
+		title: team ? `${team.name} - ${org?.name}` : `${org?.name}`,
+	};
+}
+
 export default async function RoutePage(props: PageParams) {
 	const { user, session } = await requiredCurrentUserCache();
 

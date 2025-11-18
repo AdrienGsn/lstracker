@@ -34,6 +34,23 @@ import { prisma } from "@/lib/prisma";
 import { SocialProvider } from "@/types/auth";
 import type { PageParams } from "@/types/next";
 
+export async function generateMetadata({ params }: PageParams<{ id: string }>) {
+	const { id } = await params;
+
+	const user = await prisma.user.findUnique({
+		where: { id },
+		select: { name: true },
+	});
+
+	if (!user) {
+		return notFound();
+	}
+
+	return {
+		title: `${user.name} - Administration`,
+	};
+}
+
 export default async function RoutePage(props: PageParams<{ id: string }>) {
 	const { id } = await props.params;
 
