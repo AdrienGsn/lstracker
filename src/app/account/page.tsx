@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import {
 	Layout,
 	LayoutContent,
@@ -7,6 +9,10 @@ import {
 } from "@/components/page/layout";
 import { DeleteAccountCard } from "@/features/account/delete-account-card";
 import type { PageParams } from "@/types/next";
+
+export const metadata: Metadata = {
+	title: "Mon compte",
+};
 
 export default async function RoutePage(props: PageParams) {
 	return (

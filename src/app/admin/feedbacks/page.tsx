@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import {
 	Layout,
 	LayoutContent,
@@ -10,6 +12,10 @@ import { feedbacksTable } from "@/features/admin/feedback-table/columns";
 import { prisma } from "@/lib/prisma";
 import { FeedbackWithUser } from "@/types/feedback";
 import type { PageParams } from "@/types/next";
+
+export const metadata: Metadata = {
+	title: "Feedback - Administration",
+};
 
 export default async function RoutePage(props: PageParams) {
 	const feedbacks = await prisma.bugReport.findMany({

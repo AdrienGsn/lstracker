@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import {
 	Layout,
 	LayoutContent,
@@ -9,6 +11,10 @@ import { AdminOrganizationsTable } from "@/features/admin/organizations/admin-or
 import { adminOrganizationsTable } from "@/features/admin/organizations/admin-organizations-table/columns";
 import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
+
+export const metadata: Metadata = {
+	title: "Organisations - Administration",
+};
 
 export default async function RoutePage(props: PageParams) {
 	const organizations = await prisma.organization.findMany();

@@ -14,6 +14,19 @@ import { prisma } from "@/lib/prisma";
 import type { PageParams } from "@/types/next";
 import { TeamWithRelations } from "@/types/organization";
 
+export async function generateMetadata() {
+	const { session } = await requiredCurrentUserCache();
+
+	const org = await prisma.organization.findUnique({
+		where: { id: session?.activeOrganizationId! },
+		select: { name: true },
+	});
+
+	return {
+		title: `Équipes - Paramètres - ${org?.name}`,
+	};
+}
+
 export default async function RoutePage(props: PageParams) {
 	const { session } = await requiredCurrentUserCache();
 
