@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { authClient } from "@/lib/auth/client";
-import { logger } from "@/lib/logger";
 import { LayerSelector } from "../layer-selector";
 import { CreateMarkerModal } from "./create-marker-modal";
 import { MarkerPopup } from "./marker-popup";
@@ -371,8 +370,6 @@ export function GTAMap(props: GTAMapProps) {
 
 					isManualPopupOpen.current = true;
 
-					setMarker(_marker.id);
-
 					root.render(
 						<QueryClientProvider client={queryClient}>
 							<MarkerPopup marker={_marker} />
@@ -382,9 +379,9 @@ export function GTAMap(props: GTAMapProps) {
 
 				leafletMarker.on("popupclose", () => {
 					if (root) {
-						setMarker(null);
-
 						lastAppliedMarkerId.current = null;
+
+						setMarker(null);
 
 						setTimeout(() => {
 							root.unmount();
@@ -499,17 +496,23 @@ export function GTAMap(props: GTAMapProps) {
 						session.activeTeamId !== markerData.teamId;
 
 					if (hasAccessToTeam && isTeamDifferent) {
-						authClient.organization
-							.setActiveTeam({
-								teamId: markerData.teamId,
-							})
-							.then(() => {
+						const setActiveTeam = async () => {
+							try {
+								await authClient.organization.setActiveTeam({
+									teamId: markerData.teamId,
+								});
+
 								lastProcessedMarkerForTeam.current = marker;
 
 								queryClient.refetchQueries({
 									queryKey: ["markers"],
 								});
-							});
+
+								window.location.reload();
+							} catch (error) {}
+						};
+
+						setActiveTeam();
 					} else {
 						lastProcessedMarkerForTeam.current = marker;
 					}
@@ -542,11 +545,9 @@ export function GTAMap(props: GTAMapProps) {
 						teamId: targetMarker.teamId,
 					});
 
-					logger.debug("Set active team completed", {
-						teamId: targetMarker.teamId,
-					});
-
 					lastProcessedMarkerForTeam.current = marker;
+
+					window.location.reload();
 				} catch (error) {}
 			};
 
