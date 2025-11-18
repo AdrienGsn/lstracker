@@ -13,7 +13,7 @@ import type {
 } from "leaflet";
 import { Fullscreen, ZoomIn, ZoomOut } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import "leaflet/dist/leaflet.css";
@@ -26,6 +26,9 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { authClient } from "@/lib/auth/client";
+import { logger } from "@/lib/logger";
 import { LayerSelector } from "../layer-selector";
 import { CreateMarkerModal } from "./create-marker-modal";
 import { MarkerPopup } from "./marker-popup";
@@ -69,7 +72,9 @@ export function GTAMap(props: GTAMapProps) {
 	const hasAppliedInitialUrlParams = useRef(false);
 	const lastAppliedMarkerId = useRef<string | null>(null);
 	const isManualPopupOpen = useRef(false);
+	const lastProcessedMarkerForTeam = useRef<string | null>(null);
 
+	const { session } = useCurrentUser();
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [createModalState, setCreateModalState] =
 		useState<CreateMarkerModalState>({
@@ -78,6 +83,11 @@ export function GTAMap(props: GTAMapProps) {
 			lng: "",
 		});
 	const [marker, setMarker] = useQueryState("marker", parseAsString);
+
+	const teamsIds = useMemo(
+		() => props.teams.map((team) => team.id),
+		[props.teams]
+	);
 
 	const queryClient = useQueryClient();
 
@@ -450,6 +460,101 @@ export function GTAMap(props: GTAMapProps) {
 			hasAppliedInitialUrlParams.current = true;
 		}
 	}, [marker, markers]);
+
+	useEffect(() => {
+		if (!marker || !markers || markers.length === 0) {
+			return;
+		}
+
+		if (!session) {
+			return;
+		}
+
+		let targetMarker = markers.find((m) => m.id === marker);
+
+		if (!targetMarker && marker) {
+			fetch(`/api/markers/${marker}`)
+				.then((res) => {
+					if (!res.ok) {
+						return null;
+					}
+
+					return res.json();
+				})
+				.then((markerData: Marker | null) => {
+					if (!markerData) {
+						return;
+					}
+
+					if (!markerData.teamId) {
+						lastProcessedMarkerForTeam.current = marker;
+
+						return;
+					}
+
+					const hasAccessToTeam = teamsIds.includes(
+						markerData.teamId
+					);
+					const isTeamDifferent =
+						session.activeTeamId !== markerData.teamId;
+
+					if (hasAccessToTeam && isTeamDifferent) {
+						authClient.organization
+							.setActiveTeam({
+								teamId: markerData.teamId,
+							})
+							.then(() => {
+								lastProcessedMarkerForTeam.current = marker;
+
+								queryClient.refetchQueries({
+									queryKey: ["markers"],
+								});
+							});
+					} else {
+						lastProcessedMarkerForTeam.current = marker;
+					}
+				});
+
+			return;
+		}
+
+		if (!targetMarker) {
+			return;
+		}
+
+		if (!targetMarker.teamId) {
+			lastProcessedMarkerForTeam.current = marker;
+
+			return;
+		}
+
+		const hasAccessToTeam = teamsIds.includes(targetMarker.teamId);
+		const isTeamDifferent = session.activeTeamId !== targetMarker.teamId;
+
+		if (lastProcessedMarkerForTeam.current === marker && !isTeamDifferent) {
+			return;
+		}
+
+		if (hasAccessToTeam && isTeamDifferent) {
+			const setActiveTeam = async () => {
+				try {
+					await authClient.organization.setActiveTeam({
+						teamId: targetMarker.teamId,
+					});
+
+					logger.debug("Set active team completed", {
+						teamId: targetMarker.teamId,
+					});
+
+					lastProcessedMarkerForTeam.current = marker;
+				} catch (error) {}
+			};
+
+			setActiveTeam();
+		} else {
+			lastProcessedMarkerForTeam.current = marker;
+		}
+	}, [marker, markers, teamsIds, session]);
 
 	const handleZoomIn = () => {
 		if (!mapInstanceRef.current) return;
