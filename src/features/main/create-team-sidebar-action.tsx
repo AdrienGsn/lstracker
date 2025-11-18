@@ -30,12 +30,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { SidebarGroupAction } from "@/components/ui/sidebar";
 import { dialog } from "@/providers/dialog-provider";
+import { DiscordChannelSelector } from "../settings/discord-channel-selector";
 
 const CreateForm = () => {
 	const form = useZodForm({
 		schema: CreateTeamSchema,
 		defaultValues: {
 			name: "",
+			channelId: undefined,
 		},
 	});
 
@@ -82,6 +84,7 @@ const CreateForm = () => {
 							</FormItem>
 						)}
 					/>
+					<DiscordChannelSelector form={form} fieldName="channelId" />
 					<AlertDialogFooter>
 						<AlertDialogCancel type="button">
 							Retour
