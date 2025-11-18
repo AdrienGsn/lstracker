@@ -2,6 +2,7 @@
 
 import { Marker, Team } from "@prisma/client";
 import {
+	Check,
 	Home,
 	LucideIcon,
 	Pin,
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/item";
 import { CtrlOrMeta, Kbd } from "@/components/ui/kbd";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { authClient } from "@/lib/auth/client";
 import { AuthPermission, AuthRole, RolesKeys } from "@/lib/auth/permissions";
 
@@ -64,11 +66,11 @@ const SEARCH_NAVIGATION: SearchNavigationGroup[] = [
 		],
 	},
 	{
-		label: "Parametres",
+		label: "Paramètres",
 		items: [
 			{
 				icon: Settings,
-				label: "General",
+				label: "Général",
 				href: "/settings",
 			},
 			{
@@ -78,12 +80,12 @@ const SEARCH_NAVIGATION: SearchNavigationGroup[] = [
 			},
 			{
 				icon: Settings,
-				label: "Equipes",
+				label: "Équipes",
 				href: "/settings/teams",
 			},
 			{
 				icon: TriangleAlert,
-				label: "Danger Zone",
+				label: "Zone de danger",
 				href: "/settings/danger",
 				roles: ["owner"],
 			},
@@ -160,6 +162,7 @@ export type SearchButtonProps = {
 export const SearchButton = (props: SearchButtonProps) => {
 	const router = useRouter();
 	const { data: activeMember } = authClient.useActiveMember();
+	const { session } = useCurrentUser();
 
 	const activeRole = useMemo(
 		() => (isAuthRole(activeMember?.role) ? activeMember?.role : undefined),
@@ -193,7 +196,7 @@ export const SearchButton = (props: SearchButtonProps) => {
 				</SidebarMenuButton>
 			</SidebarMenuItem>
 			<CommandDialog open={open} onOpenChange={setOpen}>
-				<CommandInput placeholder="Type a command or search..." />
+				<CommandInput placeholder="Tapez une commande ou effectuez une recherche..." />
 				<CommandList>
 					<CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
 					{props.teams.length > 0 ? (
@@ -201,9 +204,32 @@ export const SearchButton = (props: SearchButtonProps) => {
 							<CommandGroup heading="Equipes">
 								{props.teams.map((team) => {
 									return (
-										<CommandItem key={team.id}>
+										<CommandItem
+											key={`team-${team.id}`}
+											value={`${team.name}-team-${team.id}`}
+											onSelect={async () => {
+												await authClient.organization.setActiveTeam(
+													{
+														teamId: team.id,
+													}
+												);
+
+												if (
+													typeof window !==
+													"undefined"
+												) {
+													window.location.reload();
+												}
+											}}
+										>
 											<User2 />
 											<span>{team.name}</span>
+											{session?.activeTeamId ===
+											team.id ? (
+												<CommandShortcut>
+													<Check />
+												</CommandShortcut>
+											) : null}
 										</CommandItem>
 									);
 								})}
@@ -216,7 +242,29 @@ export const SearchButton = (props: SearchButtonProps) => {
 							<CommandGroup heading="Marqueurs">
 								{props.markers.map((marker) => {
 									return (
-										<CommandItem key={marker.id}>
+										<CommandItem
+											key={`marker-${marker.id}`}
+											value={`${marker.label}-marker-${marker.id}`}
+											onSelect={async () => {
+												if (
+													session?.activeTeamId !==
+													marker.teamId
+												) {
+													await authClient.organization.setActiveTeam(
+														{
+															teamId: marker.teamId,
+														}
+													);
+												}
+
+												if (
+													typeof window !==
+													"undefined"
+												) {
+													window.location.href = `/?marker=${marker.id}`;
+												}
+											}}
+										>
 											<Pin />
 											<span>{marker.label}</span>
 										</CommandItem>
@@ -239,7 +287,7 @@ export const SearchButton = (props: SearchButtonProps) => {
 
 										return (
 											<CommandItem
-												key={itemKey}
+												key={`item-${itemKey}`}
 												onSelect={() => {
 													if (item.href) {
 														router.push(item.href);
