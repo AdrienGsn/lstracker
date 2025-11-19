@@ -18,8 +18,8 @@ export const MapHeader = async (props: MapHeaderProps) => {
 	});
 
 	return (
-		<header className="flex items-center justify-between w-full z-50 p-4 absolute top-0 left-0 gap-4">
-			<SidebarTrigger />
+		<header className="flex items-center justify-between w-full z-50 p-2 absolute top-0 left-0 gap-4">
+			<SidebarTrigger variant="secondary" size="icon" />
 			{hasPermissionToCreate?.success ? (
 				<CreateMarkerBtn teams={props.teams} />
 			) : null}

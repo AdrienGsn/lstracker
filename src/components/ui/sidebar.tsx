@@ -270,6 +270,8 @@ function Sidebar({
 function SidebarTrigger({
 	className,
 	onClick,
+	variant = "outline",
+	size = "icon",
 	...props
 }: React.ComponentProps<typeof Button>) {
 	const { toggleSidebar } = useSidebar();
@@ -278,9 +280,9 @@ function SidebarTrigger({
 		<Button
 			data-sidebar="trigger"
 			data-slot="sidebar-trigger"
-			variant="outline"
-			size="sm"
-			className={cn("size-7", className)}
+			variant={variant}
+			size={size}
+			className={cn(className)}
 			onClick={(event) => {
 				onClick?.(event);
 				toggleSidebar();
