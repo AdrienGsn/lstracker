@@ -27,6 +27,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { authClient } from "@/lib/auth/client";
 import { LayerSelector } from "../layer-selector";
 import { CreateMarkerModal } from "./create-marker-modal";
@@ -82,6 +83,7 @@ export function GTAMap(props: GTAMapProps) {
 			lng: "",
 		});
 	const [marker, setMarker] = useQueryState("marker", parseAsString);
+	const isMobile = useIsMobile();
 
 	const teamsIds = useMemo(
 		() => props.teams.map((team) => team.id),
@@ -316,6 +318,10 @@ export function GTAMap(props: GTAMapProps) {
 
 	useEffect(() => {
 		if (isFullscreen) {
+			if (!document.fullscreenEnabled || isMobile) {
+				return;
+			}
+
 			document.documentElement.requestFullscreen();
 		} else {
 			if (document.fullscreenElement && document.fullscreenEnabled) {
@@ -620,18 +626,20 @@ export function GTAMap(props: GTAMapProps) {
 				className="h-fit bottom-2 right-2 absolute z-50"
 			>
 				<LayerSelector />
-				<Tooltip>
-					<TooltipTrigger asChild>
-						<Button
-							variant="secondary"
-							size="icon"
-							onClick={() => setIsFullscreen(!isFullscreen)}
-						>
-							<Fullscreen />
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent side="left">Plein écran</TooltipContent>
-				</Tooltip>
+				{!isMobile ? (
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								variant="secondary"
+								size="icon"
+								onClick={() => setIsFullscreen(!isFullscreen)}
+							>
+								<Fullscreen />
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent side="left">Plein écran</TooltipContent>
+					</Tooltip>
+				) : null}
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button
