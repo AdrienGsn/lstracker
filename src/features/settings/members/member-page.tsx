@@ -38,8 +38,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { FormUnsavedBar } from "@/features/form/form-unsaved-bar";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { FormManagement } from "@/lib/form-management/form-management";
+import { FormAutoSaveStickyBar } from "@/lib/form-management/form-management-sticky-bar";
 import { dialog } from "@/providers/dialog-provider";
 import { MarkerWithRelations } from "@/types/marker";
 import { MemberWithUser } from "@/types/organization";
@@ -85,7 +86,7 @@ export const MemberPage = (props: MemberPageProps) => {
 		});
 
 	return (
-		<FormUnsavedBar
+		<FormManagement
 			form={form}
 			onSubmit={async (data: UpdateOrgMemberSchemaType) => {
 				await updateOrgMember(data);
@@ -231,6 +232,7 @@ export const MemberPage = (props: MemberPageProps) => {
 					</CardContent>
 				</Card>
 			</LayoutContent>
-		</FormUnsavedBar>
+			<FormAutoSaveStickyBar />
+		</FormManagement>
 	);
 };

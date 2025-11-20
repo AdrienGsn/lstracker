@@ -4,7 +4,7 @@ import { Marker } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Check, Copy, Pencil, Trash } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
-import { useState } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 import "leaflet/dist/leaflet.css";
@@ -19,8 +19,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { authClient } from "@/lib/auth/client";
-import { cn } from "@/lib/utils";
 import { dialog } from "@/providers/dialog-provider";
 import { UpdateMarkerForm } from "./update-marker-form";
 
@@ -67,18 +67,13 @@ export const MarkerPopup = ({ marker }: MarkerPopupProps) => {
 			},
 		});
 
-	const [copied, setCopied] = useState(false);
+	const { copyToClipboard, isCopied } = useCopyToClipboard();
 
-	const copyToClipboard = () => {
-		navigator.clipboard.writeText(`${marker.lat}, ${marker.lng}`).then(
-			() => {
-				toast.success("Coordonnées copiées dans le presse-papier !");
-			},
-			() => {
-				toast.error("Erreur lors de la copie des coordonnées.");
-			}
-		);
-	};
+	useEffect(() => {
+		if (isCopied) {
+			toast.success("Coordonnées copiées dans le presse-papier !");
+		}
+	}, [isCopied]);
 
 	return (
 		<Card>
@@ -92,14 +87,15 @@ export const MarkerPopup = ({ marker }: MarkerPopupProps) => {
 				<Button
 					size="icon"
 					onClick={() => {
-						copyToClipboard();
-						setCopied(true);
-						setTimeout(() => setCopied(false), 700);
+						copyToClipboard(`${marker.lat}, ${marker.lng}`);
 					}}
-					className={cn(copied && "animate-bounce")}
 					aria-label="Copier les coordonnées"
 				>
-					{copied ? <Check /> : <Copy />}
+					{isCopied ? (
+						<Check className="h-4 w-4 text-green-600" />
+					) : (
+						<Copy className="h-4 w-4" />
+					)}
 				</Button>
 				{canEditMarker ? (
 					<LoadingButton
