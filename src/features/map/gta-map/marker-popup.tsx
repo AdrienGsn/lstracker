@@ -92,7 +92,7 @@ export const MarkerPopup = ({ marker }: MarkerPopupProps) => {
 					aria-label="Copier les coordonnées"
 				>
 					{isCopied ? (
-						<Check className="h-4 w-4 text-green-600" />
+						<Check className="h-4 w-4" />
 					) : (
 						<Copy className="h-4 w-4" />
 					)}
