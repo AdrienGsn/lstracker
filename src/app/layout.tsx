@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, Suspense } from "react";
 
 import "@/app/globals.css";
 
 import { TailwindIndicator } from "@/components/utils/tailwind-indicator";
 import { siteConfig } from "@/config/site";
+import { ServerToaster } from "@/lib/server-toast/server-toast.server";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/providers";
 import { PageParams } from "@/types/next";
@@ -56,6 +57,9 @@ export default async function RootLayout(props: RootLayoutProps) {
 			>
 				<Providers>
 					{props.children}
+					<Suspense>
+						<ServerToaster />
+					</Suspense>
 					<TailwindIndicator />
 				</Providers>
 			</body>
