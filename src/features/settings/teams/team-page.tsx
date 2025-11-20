@@ -30,10 +30,11 @@ import {
 } from "@/components/ui/card";
 import { useZodForm } from "@/components/ui/form";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { FormManagement } from "@/lib/form-management/form-management";
+import { FormAutoSaveStickyBar } from "@/lib/form-management/form-management-sticky-bar";
 import { dialog } from "@/providers/dialog-provider";
 import { TeamWithRelations } from "@/types/organization";
 import { parseMetadata } from "@/utils/metadata";
-import { FormUnsavedBar } from "../../form/form-unsaved-bar";
 import { DiscordChannelSelector } from "../discord-channel-selector";
 import { AddTeamMember } from "./add-team-member";
 import { TeamMarkersTable } from "./team-markers-table";
@@ -83,7 +84,7 @@ export const TeamPage = (props: TeamPageProps) => {
 		});
 
 	return (
-		<FormUnsavedBar
+		<FormManagement
 			form={form}
 			onSubmit={async (data: UpdateTeamSchemaType) => {
 				await updateTeam(data);
@@ -176,6 +177,7 @@ export const TeamPage = (props: TeamPageProps) => {
 					</CardContent>
 				</Card>
 			</LayoutContent>
-		</FormUnsavedBar>
+			<FormAutoSaveStickyBar />
+		</FormManagement>
 	);
 };
